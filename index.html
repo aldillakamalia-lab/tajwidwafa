@@ -1,0 +1,2895 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Petualangan Tajwid Wafa – Misi Menjadi Ahli Tajwid Cilik</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top left, #FEF9C3 0%, #EFF6FF 45%, #ECFDF5 100%);
+      color: #1E293B;
+      overflow-x: hidden;
+    }
+    .font-display { font-family: 'Fredoka', 'Plus Jakarta Sans', sans-serif; }
+    .font-arabic {
+      font-family: 'Scheherazade New', 'Amiri', serif;
+      direction: rtl;
+      line-height: 2.3;
+      padding-top: 0.1em;
+      padding-bottom: 0.1em;
+    }
+
+    @keyframes floatBee {
+      0%, 100% { transform: translateY(0px) rotate(-2deg); }
+      50% { transform: translateY(-7px) rotate(3deg); }
+    }
+    .bee-float { animation: floatBee 2.8s ease-in-out infinite; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.94); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .pop-in { animation: popIn 0.25s ease-out; }
+
+    @keyframes spinWheel {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(1440deg); }
+    }
+    .wheel-spinning { animation: spinWheel 1.6s cubic-bezier(0.15, 0.85, 0.25, 1) forwards; }
+
+    ::-webkit-scrollbar { width: 7px; height: 7px; }
+    ::-webkit-scrollbar-track { background: #F1F5F9; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
+
+    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- ===================================================================== -->
+  <!-- TOP NAVIGATION BAR & MODE PEMBELAJARAN                                -->
+  <!-- ===================================================================== -->
+  <header class="bg-white/95 backdrop-blur-md border-b-4 border-amber-300 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-[1480px] mx-auto px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2.5">
+      <!-- Brand & Maskot Lebah Wafa -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('map')">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-300 to-amber-500 border-2 border-amber-600 flex items-center justify-center shadow-md bee-float shrink-0">
+          <!-- SVG Maskot Lebah Wafa -->
+          <svg viewBox="0 0 64 64" class="w-9 h-9">
+            <ellipse cx="22" cy="18" rx="9" ry="6" fill="#E0F2FE" stroke="#38BDF8" stroke-width="2" transform="rotate(-25 22 18)"/>
+            <ellipse cx="42" cy="18" rx="9" ry="6" fill="#E0F2FE" stroke="#38BDF8" stroke-width="2" transform="rotate(25 42 18)"/>
+            <ellipse cx="32" cy="36" rx="16" ry="13" fill="#FACC15" stroke="#78350F" stroke-width="2.5"/>
+            <path d="M22 26 Q32 24 42 26 M20 35 Q32 33 44 35 M23 44 Q32 42 41 44" stroke="#78350F" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <circle cx="26" cy="31" r="2" fill="#1E293B"/>
+            <circle cx="38" cy="31" r="2" fill="#1E293B"/>
+            <path d="M28 38 Q32 42 36 38" stroke="#78350F" stroke-width="2" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-extrabold text-[10px] uppercase">Kelas 3 SD • Metode Wafa</span>
+            <span id="progress-pill" class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-extrabold text-[10px]">0 / 31 Subbab</span>
+          </div>
+          <h1 class="font-display font-bold text-base sm:text-xl text-teal-900 leading-tight">
+            PETUALANGAN TAJWID WAFA
+          </h1>
+        </div>
+      </div>
+
+      <!-- Tombol Navigasi Utama -->
+      <nav class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <button onclick="navigateTo('map')" id="nav-btn-map" class="px-3 py-2 rounded-xl bg-amber-400 text-amber-950 font-display font-bold text-xs sm:text-sm shadow-xs border-b-2 border-amber-600 cursor-pointer">
+          🗺️ Peta 10 Bab
+        </button>
+        <button onclick="navigateTo('games')" id="nav-btn-games" class="px-3 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-display font-bold text-xs sm:text-sm shadow-xs border-b-2 border-teal-800 cursor-pointer">
+          🎮 10 Arena Game
+        </button>
+        <button onclick="navigateTo('eval')" id="nav-btn-eval" class="px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-display font-bold text-xs sm:text-sm shadow-xs border-b-2 border-purple-800 cursor-pointer">
+          🏆 Evaluasi & Lencana
+        </button>
+        <button onclick="toggleTeacherPanel()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-amber-300 font-display font-bold text-xs sm:text-sm shadow-xs cursor-pointer">
+          ⚙️ Panel Guru
+        </button>
+      </nav>
+    </div>
+
+    <!-- Bar Mode Pembelajaran (Belajar Bersama / Individu / Kelompok) -->
+    <div class="bg-teal-900 text-white px-3 sm:px-5 py-1.5 text-xs">
+      <div class="max-w-[1480px] mx-auto flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-amber-300">Mode Belajar:</span>
+          <button onclick="setLearningMode('bersama')" id="mode-pill-bersama" class="px-2.5 py-0.5 rounded-lg bg-amber-400 text-amber-950 font-extrabold cursor-pointer">
+            📽️ Belajar Bersama (Proyektor)
+          </button>
+          <button onclick="setLearningMode('individu')" id="mode-pill-individu" class="px-2.5 py-0.5 rounded-lg bg-white/15 hover:bg-white/25 text-white font-bold cursor-pointer">
+            🧒 Mode Individu
+          </button>
+          <button onclick="setLearningMode('kelompok')" id="mode-pill-kelompok" class="px-2.5 py-0.5 rounded-lg bg-white/15 hover:bg-white/25 text-white font-bold cursor-pointer">
+            👥 Mode Kelompok
+          </button>
+        </div>
+
+        <!-- Papan Skor Kelompok Mini (Muncul saat Mode Kelompok aktif) -->
+        <div id="group-scoreboard-strip" class="hidden flex-wrap items-center gap-2">
+          <span class="font-bold text-teal-200">Skor Kelompok:</span>
+          <div id="group-scores-badges" class="flex flex-wrap items-center gap-1.5"></div>
+          <button onclick="openGroupSetupModal()" class="px-2 py-0.5 rounded bg-white/20 hover:bg-white/30 text-[11px] font-bold cursor-pointer">✏️ Atur</button>
+        </div>
+
+        <div id="teacher-note-indicator" class="text-teal-200 font-semibold hidden md:block">
+          Urutan Resmi Daftar Isi Buku Tajwid Metode Wafa (Bab 1 – Bab 10)
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN CONTENT CONTAINER                                                -->
+  <!-- ===================================================================== -->
+  <main class="flex-1 max-w-[1480px] w-full mx-auto p-3 sm:p-5">
+
+    <!-- =================================================================== -->
+    <!-- VIEW 1: PETA PETUALANGAN 10 BAB TAJWID WAFA                         -->
+    <!-- =================================================================== -->
+    <section id="view-map" class="space-y-5 pop-in">
+      <!-- Banner Sapaan Maskot Lebah Wafa -->
+      <div class="bg-gradient-to-r from-teal-700 via-emerald-700 to-teal-800 rounded-3xl p-5 sm:p-6 text-white shadow-xl border-4 border-amber-300 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-amber-300 text-4xl sm:text-5xl flex items-center justify-center shadow-lg border-2 border-white shrink-0 bee-float">
+            🐝
+          </div>
+          <div>
+            <span class="px-3 py-0.5 rounded-full bg-amber-400 text-amber-950 font-extrabold text-xs uppercase">
+              Misi Menjadi Ahli Tajwid Cilik
+            </span>
+            <h2 class="font-display text-xl sm:text-3xl font-bold mt-1 text-amber-50">
+              Assalamu'alaikum! Yuk Jelajahi 10 Pulau Tajwid Wafa!
+            </h2>
+            <p class="text-xs sm:text-sm text-teal-100 mt-1 max-w-2xl">
+              Pilih bab sesuai urutan Buku Tajwid Metode Wafa. Pelajari ciri-ciri huruf, rumus ingat cepat, analogi seru, contoh ayat Al-Qur'an, dan mainkan 10 jenis permainannya!
+            </p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 shrink-0">
+          <button onclick="openLesson(1, 0)" class="px-4 py-3 rounded-2xl bg-amber-400 hover:bg-amber-500 text-amber-950 font-display font-bold text-sm shadow-md border-b-4 border-amber-600 cursor-pointer">
+            🚀 Mulai dari Bab 1
+          </button>
+          <button onclick="navigateTo('games')" class="px-4 py-3 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-display font-bold text-sm border border-white/30 cursor-pointer">
+            🎡 Roda Keberuntungan
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid Peta 10 Bab (Urutan Wajib Sesuai Daftar Isi Buku Wafa) -->
+      <div id="chapters-map-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 2: RUANG BELAJAR MATERI 9 KOMPONEN (LESSON VIEW)               -->
+    <!-- =================================================================== -->
+    <section id="view-lesson" class="hidden space-y-4 pop-in">
+      <!-- Bar Navigasi Subbab -->
+      <div class="bg-white rounded-2xl p-3 shadow-sm border-2 border-amber-200 flex flex-wrap items-center justify-between gap-2">
+        <button onclick="navigateTo('map')" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-display font-bold text-xs sm:text-sm cursor-pointer">
+          ⬅️ Kembali ke Peta 10 Bab
+        </button>
+
+        <div id="subchapter-tabs" class="flex flex-wrap items-center justify-center gap-1.5"></div>
+
+        <div class="flex items-center gap-1.5">
+          <button onclick="prevSubchapter()" class="px-3 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs cursor-pointer">◀ Sebelumnya</button>
+          <button onclick="nextSubchapter()" class="px-3 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs cursor-pointer">Lanjut ▶</button>
+        </div>
+      </div>
+
+      <!-- Konten 9 Bagian Konsisten -->
+      <div id="lesson-content-container" class="space-y-4"></div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 3: 10 ARENA PERMAINAN EDUKATIF TAJWID                          -->
+    <!-- =================================================================== -->
+    <section id="view-games" class="hidden space-y-4 pop-in">
+      <!-- Pemilih Bab Sumber Soal & 10 Jenis Game -->
+      <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-md border-2 border-teal-200">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-teal-900 flex items-center gap-2">
+              <span>🎮</span> 10 Arena Permainan Edukatif Tajwid Wafa
+            </h2>
+            <p class="text-xs text-slate-600 font-medium">Pilih filter materi bab yang sudah dipelajari, lalu klik salah satu dari 10 permainan di bawah!</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <label class="text-xs font-extrabold text-slate-700">Sumber Materi:</label>
+            <select id="game-chapter-filter" onchange="renderActiveGame()" class="px-3 py-2 rounded-xl bg-amber-50 border-2 border-amber-300 font-display font-bold text-xs sm:text-sm text-slate-800">
+              <option value="all">Semua Bab (Bab 1 – Bab 10)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 10 Tombol Permainan Sesuai Spesifikasi -->
+        <div id="game-selector-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
+      </div>
+
+      <!-- Stage Permainan Aktif -->
+      <div id="game-stage-container" class="bg-white rounded-3xl p-5 sm:p-7 shadow-xl border-4 border-amber-300 min-h-[380px]"></div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW 4: EVALUASI BAB, REKAP NILAI & LENCANA                         -->
+    <!-- =================================================================== -->
+    <section id="view-eval" class="hidden space-y-4 pop-in">
+      <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-xl border-4 border-purple-300">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b-2 border-purple-100">
+          <div>
+            <span class="px-3 py-0.5 rounded-full bg-purple-100 text-purple-800 font-extrabold text-xs uppercase">Asesmen & Lencana Ahli Tajwid</span>
+            <h2 class="font-display text-2xl font-bold text-slate-800 mt-1">Rekap Penguasaan Materi & Evaluasi Bab</h2>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="eval-chapter-select" class="px-3 py-2 rounded-xl bg-purple-50 border-2 border-purple-200 font-display font-bold text-xs sm:text-sm"></select>
+            <button onclick="startChapterEvaluation()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-display font-bold text-xs sm:text-sm shadow-xs cursor-pointer">
+              📝 Mulai Uji Pemahaman Bab
+            </button>
+          </div>
+        </div>
+
+        <!-- Area Kuis Evaluasi Bab (Jika sedang dikerjakan) -->
+        <div id="eval-quiz-area" class="hidden my-4 p-5 rounded-2xl bg-amber-50/80 border-2 border-amber-300"></div>
+
+        <!-- Rekap 8 Aspek & Status Penguasaan 10 Bab -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
+          <div class="lg:col-span-7 space-y-2.5">
+            <h3 class="font-display font-bold text-base text-slate-800">📊 Status Penguasaan 10 Bab Buku Wafa:</h3>
+            <div id="eval-mastery-list" class="space-y-2"></div>
+          </div>
+
+          <div class="lg:col-span-5 space-y-3">
+            <div class="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-300">
+              <h3 class="font-display font-bold text-base text-amber-950 mb-2">🏅 Koleksi Lencana Ahli Tajwid Cilik:</h3>
+              <div id="badges-collection-grid" class="grid grid-cols-2 gap-2"></div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-teal-50 border-2 border-teal-200">
+              <h3 class="font-display font-bold text-sm text-teal-950 mb-1">🎙️ Rubrik Praktik Membaca Al-Qur'an (Guru):</h3>
+              <p class="text-xs text-slate-600 mb-2">Guru dapat mencatat penilaian praktik pelafalan siswa langsung saat membaca ayat:</p>
+              <div class="flex gap-2">
+                <button onclick="recordOralPractice('Sangat Lancar & Tepat')" class="flex-1 py-2 px-2 rounded-xl bg-emerald-600 text-white font-bold text-xs cursor-pointer">🌟 Mumtaz</button>
+                <button onclick="recordOralPractice('Baik, Perlu Latihan Dengung/Panjang')" class="flex-1 py-2 px-2 rounded-xl bg-amber-500 text-white font-bold text-xs cursor-pointer">👍 Jayyid</button>
+              </div>
+              <div id="oral-practice-feedback" class="mt-2 text-xs font-bold text-teal-800"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- PANEL KHUSUS GURU (MODAL)                                             -->
+  <!-- ===================================================================== -->
+  <div id="teacher-panel-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-5">
+    <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border-4 border-teal-400 overflow-hidden">
+      <div class="bg-gradient-to-r from-teal-700 to-emerald-700 px-6 py-4 text-white flex items-center justify-between">
+        <div>
+          <h3 class="font-display font-bold text-lg sm:text-xl">⚙️ Panel Kontrol Khusus Guru</h3>
+          <p class="text-xs text-teal-100">Navigasi cepat bab/subbab, pengaturan kelompok, kunci jawaban & reset progres.</p>
+        </div>
+        <button onclick="toggleTeacherPanel()" class="w-9 h-9 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold cursor-pointer">✕</button>
+      </div>
+
+      <div class="p-5 space-y-4 text-sm max-h-[80vh] overflow-y-auto">
+        <!-- Lompat Langsung ke Bab & Subbab -->
+        <div class="p-4 rounded-2xl bg-teal-50 border border-teal-200 space-y-2.5">
+          <label class="block text-xs font-extrabold text-teal-900 uppercase">📖 Lompat Langsung ke Materi (Daftar Isi Wafa):</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <select id="teacher-jump-chapter" onchange="populateTeacherSubchapters()" class="px-3 py-2 rounded-xl bg-white border border-teal-300 font-bold text-xs"></select>
+            <select id="teacher-jump-sub" class="px-3 py-2 rounded-xl bg-white border border-teal-300 font-bold text-xs"></select>
+          </div>
+          <button onclick="executeTeacherJump()" class="w-full py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-display font-bold text-xs cursor-pointer">
+            Tampilkan Materi di Proyektor
+          </button>
+        </div>
+
+        <!-- Pengaturan Mode & Kelompok -->
+        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-2.5">
+          <label class="block text-xs font-extrabold text-amber-900 uppercase">👥 Pengaturan Kompetisi Kelompok:</label>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <span class="text-xs font-bold text-slate-600 block mb-1">Jumlah Kelompok (2–4):</span>
+              <select id="teacher-group-count" onchange="updateGroupCount(this.value)" class="w-full px-3 py-2 rounded-xl bg-white border border-amber-300 font-bold text-xs">
+                <option value="2">2 Kelompok (A & B)</option>
+                <option value="3">3 Kelompok (A, B, C)</option>
+                <option value="4">4 Kelompok (A, B, C, D)</option>
+              </select>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-slate-600 block mb-1">Catatan Metodologi Wafa:</span>
+              <label class="flex items-center gap-2 mt-2 text-xs font-bold text-slate-700 cursor-pointer">
+                <input id="teacher-show-notes" type="checkbox" checked onchange="toggleTeacherPedagogyNotes()" class="w-4 h-4 accent-teal-600">
+                <span>Tampilkan Panduan Guru</span>
+              </label>
+            </div>
+          </div>
+          <div id="teacher-group-score-controls" class="grid grid-cols-2 gap-2 pt-1"></div>
+        </div>
+
+        <!-- Reset Progres -->
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-rose-50 border border-rose-200">
+          <span class="text-xs font-bold text-rose-900">Hapus riwayat belajar & mulai ulang kelas baru:</span>
+          <button onclick="resetAllProgress()" class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs cursor-pointer">
+            🔄 Reset Progres
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT: STRUKTUR LENGKAP 10 BAB BUKU WAFA & 10 MINI-GAMES         -->
+  <!-- ===================================================================== -->
+  <script>
+    // =========================================================================
+    // 1. DATABASE KURIKULUM TAJWID METODE WAFA (URUTAN MUTLAK SESUAI DAFTAR ISI)
+    // =========================================================================
+    const WAFA_CHAPTERS = [
+      {
+        bab: 1,
+        title: "BAB 1 — GHUNNAH",
+        icon: "🐝",
+        color: "amber",
+        islandName: "Pulau Dengung Lebah",
+        subchapters: [
+          {
+            id: "1-1",
+            name: "Ghunnah (Ghunnah Musyaddadah)",
+            arabicTitle: "الْغُنَّةُ",
+            pronunciation: "Dibaca: Ghun-nah",
+            definition: "Ghunnah artinya suara dengung yang keluar dari pangkal hidung. Setiap ada huruf Nun bertasydid (نّ) atau Mim bertasydid (مّ), bacaannya wajib didengungkan selama 2 ketukan.",
+            signs: "Tanda pengenal utamanya sangat mudah dilihat: huruf Nun (ن) atau Mim (م) yang memakai tanda tasydid ( ّ ).",
+            letters: ["نّ", "مّ"],
+            formula: "Kunci Ingat: 'NUN TASYDID & MIM TASYDID = DENGUNG 2 KETUKAN'",
+            howToRead: "Tahan suara di hidung (berdengung lembut seperti lebah) selama 2 ketukan sebelum pindah ke huruf berikutnya. Jangan terburu-buru!",
+            analogy: {
+              title: "Analogi Suara Lebah Kecil 🐝",
+              text: "Pernah dengar lebah terbang 'mmmmm...' atau 'nnnnn...'? Saat bertemu نّ atau مّ, tahan suara berdengung di hidung selama 2 ketukan seperti lebah yang hinggap sebentar di bunga."
+            },
+            examples: [
+              { ar: "قُلْ اَعُوْذُ بِرَبِّ <span class='text-rose-600 bg-rose-100 px-1 rounded'>النَّ</span>اسِۙ", surah: "QS. An-Naas: 1", reason: "Ada huruf Nun bertasydid (نَّ).", how: "Tahan dengung pada bunyi 'an-nāsi' selama 2 ketukan." },
+              { ar: "عَ<span class='text-rose-600 bg-rose-100 px-1 rounded'>مَّ</span> يَتَسَاۤءَلُوْنَۚ", surah: "QS. An-Naba': 1", reason: "Ada huruf Mim bertasydid (مَّ).", how: "Tahan dengung pada bibir tertutup rapat 'am-ma' selama 2 ketukan." },
+              { ar: "اِ<span class='text-rose-600 bg-rose-100 px-1 rounded'>نَّآ</span> اَعْطَيْنٰكَ الْكَوْثَرَۗ", surah: "QS. Al-Kautsar: 1", reason: "Ada huruf Nun bertasydid (نَّا).", how: "Dengungkan terlebih dahulu 'in-nā' sebelum memanjangkan mad." }
+            ],
+            comparison: {
+              title: "Perbedaan Nun/Mim Biasa vs Ghunnah",
+              colA: "Nun / Mim Tanpa Tasydid (نَ / مَ)",
+              colB: "Ghunnah (نّ / مّ)",
+              rows: [
+                ["Tidak bertasydid", "Memakai tanda tasydid ( ّ )"],
+                ["Dibaca cepat 1 ketukan tanpa ditahan", "Ditahan berdengung di hidung 2 ketukan"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca 'Inna' terlalu cepat tanpa menahan dengung.", right: "Menahan dengung 'In-nā' 2 ketukan dengan suara keluar dari pangkal hidung." }
+            ],
+            summary: {
+              hukum: "Ghunnah",
+              ciri: "Huruf Nun bertasydid (نّ) atau Mim bertasydid (مّ)",
+              huruf: "نّ dan مّ",
+              cara: "Dibaca berdengung di hidung selama 2 ketukan",
+              contoh: "اِنَّآ اَعْطَيْنٰكَ الْكَوْثَرَ (QS. Al-Kautsar: 1)"
+            },
+            teacherNote: "Dalam pembelajaran Metode Wafa, latih anak merasakan getaran lembut di pangkal hidung saat mengucapkan 'mmmmm' dan 'nnnnn' dengan ketukan tangan 2 kali."
+          }
+        ]
+      },
+      {
+        bab: 2,
+        title: "BAB 2 — NUN SUKUN ATAU TANWIN",
+        icon: "🚦",
+        islandName: "Kota 5 Persimpangan Nun Sukun",
+        subchapters: [
+          {
+            id: "2-1",
+            name: "1. Idhar Halqi",
+            arabicTitle: "اِظْهَارٌ حَلْقِيٌّ",
+            pronunciation: "Dibaca: Idz-har Hal-qi",
+            definition: "Idhar artinya jelas, Halqi artinya tenggorokan. Apabila ada Nun Sukun (نْ) atau Tanwin (ـً ـٍ ـٌ) bertemu salah satu dari 6 huruf tenggorokan, maka dibaca jelas tanpa dengung.",
+            signs: "Nun Sukun (نْ) atau Tanwin (ـً ـٍ ـٌ) diikuti salah satu huruf: ء هـ ع ح غ خ.",
+            letters: ["ء", "هـ", "ع", "ح", "غ", "خ"],
+            formula: "Kunci Ingat: '6 HURUF TENGGOROKAN (ء هـ ع ح غ خ) = BACA JELAS!'",
+            howToRead: "Bunyi 'N' pada Nun Sukun atau Tanwin diucapkan jelas dan terang, langsung menyambung ke huruf berikutnya tanpa ditahan.",
+            analogy: {
+              title: "Analogi Lampu Hijau Lalu Lintas 🟢",
+              text: "Seperti lampu hijau di jalan raya! Kendaraan melaju lancar tanpa berhenti. Saat bertemu huruf Idhar Halqi, bunyi 'N' langsung jalan jelas tanpa ditahan dengung."
+            },
+            examples: [
+              { ar: "مِ<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>نْ خَ</span>وْفٍ", surah: "QS. Quraisy: 4", reason: "Nun sukun (نْ) bertemu huruf Kha (خ).", how: "Dibaca jelas 'min khauf' tanpa dengung." },
+              { ar: "سَلٰ<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>مٌ هِ</span>يَ حَتّٰى مَطْلَعِ الْفَجْرِ", surah: "QS. Al-Qadr: 5", reason: "Dhommatain (ـٌ) bertemu huruf Ha (هـ).", how: "Dibaca jelas 'salāmun hiya'." },
+              { ar: "فَصَلِّ لِرَبِّكَ وَا<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>نْحَ</span>رْۗ", surah: "QS. Al-Kautsar: 2", reason: "Nun sukun (نْ) bertemu huruf Ha kecil (ح).", how: "Dibaca jelas 'wanḥar'." }
+            ],
+            comparison: {
+              title: "Perbedaan Idhar Halqi vs Ikhfa' Haqiqi",
+              colA: "Idhar Halqi",
+              colB: "Ikhfa' Haqiqi",
+              rows: [
+                ["Hurufnya 6 huruf tenggorokan (ء هـ ع ح غ خ)", "Hurufnya 15 huruf selain Idhar, Idghom, dan Iqlab"],
+                ["Dibaca JELAS tanpa dengung", "Dibaca SAMAR disertai dengung 2 ketukan"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Menahan bunyi 'minnn khauf' seperti berdengung.", right: "Mengucapkan 'min khauf' secara singkat dan jelas." }
+            ],
+            summary: {
+              hukum: "Idhar Halqi",
+              ciri: "نْ atau Tanwin bertemu huruf tenggorokan",
+              huruf: "ء، هـ، ع، ح، غ، خ",
+              cara: "Dibaca jelas dan terang tanpa dengung",
+              contoh: "مِنْ خَوْفٍ (QS. Quraisy: 4)"
+            },
+            teacherNote: "Pastikan anak membedakan huruf ح (tenggorokan tengah) dan خ (tenggorokan atas) sebagai bagian dari 6 huruf Halqi."
+          },
+          {
+            id: "2-2",
+            name: "2. Idghom Bighunnah",
+            arabicTitle: "اِدْغَامٌ بِغُنَّةٍ",
+            pronunciation: "Dibaca: Id-ghom Bi-ghun-nah",
+            definition: "Idghom Bighunnah artinya memasukkan bunyi Nun Sukun (نْ) atau Tanwin ke huruf berikutnya disertai dengung 2 ketukan.",
+            signs: "Nun Sukun (نْ) atau Tanwin (ـً ـٍ ـٌ) bertemu salah satu dari 4 huruf: ي ن م و dalam dua kata.",
+            letters: ["ي", "ن", "م", "و"],
+            formula: "Kunci Ingat: 'YANMU (ي ن م و) = MELEBUR + DENGUNG 2 KETUKAN'",
+            howToRead: "Bunyi 'N' hilang/melebur masuk ke huruf ي، ن، م، و sambil ditahan berdengung di hidung selama 2 ketukan.",
+            analogy: {
+              title: "Analogi Gula Larut di Teh Manis 🍵",
+              text: "Saat gula dimasukkan ke air teh lalu diaduk, gula melebur menyatu dan rasanya jadi manis. Begitu pula bunyi 'N' yang melebur ke huruf ي ن م و dengan dengung manis 2 ketukan!"
+            },
+            examples: [
+              { ar: "مِ<span class='text-amber-700 bg-amber-100 px-1 rounded'>نْ مَّ</span>سَدٍ", surah: "QS. Al-Lahab: 5", reason: "Nun sukun (نْ) bertemu huruf Mim (م).", how: "Bunyi 'N' melebur menjadi 'mim-masad' dengan dengung 2 ketukan." },
+              { ar: "اَبِيْ لَهَ<span class='text-amber-700 bg-amber-100 px-1 rounded'>بٍ وَّ</span>تَبَّۗ", surah: "QS. Al-Lahab: 1", reason: "Kasratain (ـٍ) bertemu huruf Wawu (و).", how: "Melebur menjadi 'lahabiw-watabb' dengan dengung." },
+              { ar: "فَمَ<span class='text-amber-700 bg-amber-100 px-1 rounded'>نْ يَّ</span>عْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَّرَهٗۚ", surah: "QS. Az-Zalzalah: 7", reason: "Nun sukun (نْ) bertemu huruf Ya (ي).", how: "Melebur menjadi 'famay-ya'mal' disertai dengung." }
+            ],
+            comparison: {
+              title: "Idghom Bighunnah vs Idghom Bilaghunnah",
+              colA: "Idghom Bighunnah",
+              colB: "Idghom Bilaghunnah",
+              rows: [
+                ["Hurufnya 4: ي ن م و (YANMU)", "Hurufnya 2: ل dan ر"],
+                ["Melebur DENGAN dengung 2 ketukan", "Melebur TANPA dengung"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Masih membunyikan huruf 'N' (misal: 'min masad').", right: "Meleburkan 'N' sepenuhnya menjadi 'mim-masad' dengan dengung." }
+            ],
+            summary: {
+              hukum: "Idghom Bighunnah",
+              ciri: "نْ atau Tanwin bertemu ي، ن، م، و",
+              huruf: "ي، ن، م، و",
+              cara: "Melebur masuk disertai dengung 2 ketukan",
+              contoh: "مِنْ مَّسَدٍ (QS. Al-Lahab: 5)"
+            },
+            teacherNote: "Ingatkan catatan penting: pertemuan terjadi dalam dua kata (jika satu kata, hukumnya Idzhar Wajib pada Bab 5)."
+          },
+          {
+            id: "2-3",
+            name: "3. Idghom Bilaghunnah",
+            arabicTitle: "اِدْغَامٌ بِلَا غُنَّةٍ",
+            pronunciation: "Dibaca: Id-ghom Bi-la Ghun-nah",
+            definition: "Idghom Bilaghunnah artinya memasukkan bunyi Nun Sukun (نْ) atau Tanwin ke huruf Lam (ل) atau Ra (ر) tanpa berdengung.",
+            signs: "Nun Sukun (نْ) atau Tanwin (ـً ـٍ ـٌ) bertemu huruf Lam (ل) atau Ra (ر).",
+            letters: ["ل", "ر"],
+            formula: "Kunci Ingat: 'LAM & RA (ل ر) = MELEBUR TANPA DENGUNG'",
+            howToRead: "Langsung masukkan bunyi ke huruf Lam (ل) atau Ra (ر) secara jelas dan tanpa menahan dengung.",
+            analogy: {
+              title: "Analogi Kereta Pindah Rel Cepat 🚄",
+              text: "Kereta langsung berpindah ke rel ل atau ر tanpa berhenti di stasiun dengung."
+            },
+            examples: [
+              { ar: "وَيْ<span class='text-sky-700 bg-sky-100 px-1 rounded'>لٌ لِّ</span>كُلِّ هُمَزَةٍ لُّمَزَةٍۙ", surah: "QS. Al-Humazah: 1", reason: "Dhommatain (ـٌ) bertemu huruf Lam (ل).", how: "Dibaca 'wailul-likulli' tanpa dengung." },
+              { ar: "مِ<span class='text-sky-700 bg-sky-100 px-1 rounded'>نْ رَّ</span>بِّهِمْ", surah: "QS. Al-Qadr: 4", reason: "Nun sukun (نْ) bertemu huruf Ra (ر).", how: "Dibaca 'mir-rabbihim' tanpa dengung." },
+              { ar: "خَيْ<span class='text-sky-700 bg-sky-100 px-1 rounded'>رٌ لَّ</span>كَ مِنَ الْاُوْلٰىۗ", surah: "QS. Ad-Dhuha: 4", reason: "Dhommatain (ـٌ) bertemu huruf Lam (ل).", how: "Dibaca 'khairul-laka' tanpa dengung." }
+            ],
+            comparison: {
+              title: "Idghom Bilaghunnah vs Idghom Bighunnah",
+              colA: "Idghom Bilaghunnah",
+              colB: "Idghom Bighunnah",
+              rows: [
+                ["Hurufnya hanya 2: ل dan ر", "Hurufnya 4: ي ن م و"],
+                ["Tidak boleh berdengung", "Wajib berdengung 2 ketukan"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Menahan dengung pada 'wailulll-likulli'.", right: "Langsung memasukkan ke Lam bertasydid 'wailul-likulli' tanpa dengung." }
+            ],
+            summary: {
+              hukum: "Idghom Bilaghunnah",
+              ciri: "نْ atau Tanwin bertemu ل atau ر",
+              huruf: "ل dan ر",
+              cara: "Melebur masuk tanpa dengung",
+              contoh: "وَيْلٌ لِّكُلِّ هُمَزَةٍ (QS. Al-Humazah: 1)"
+            },
+            teacherNote: "Latih anak mengucapkan 'mir-rabbihim' tanpa memanjangkan getaran Ra secara berlebihan."
+          },
+          {
+            id: "2-4",
+            name: "4. Iqlab",
+            arabicTitle: "اِقْلَابٌ",
+            pronunciation: "Dibaca: Iq-lab",
+            definition: "Iqlab artinya membalik atau mengganti. Apabila Nun Sukun (نْ) atau Tanwin bertemu huruf Ba (ب), bunyi 'N' berubah menjadi bunyi 'M' (Mim) disertai dengung 2 ketukan.",
+            signs: "Nun Sukun (نْ) atau Tanwin bertemu huruf Ba (ب). Biasanya di mushaf terdapat tanda huruf Mim kecil (مۢ).",
+            letters: ["ب"],
+            formula: "Kunci Ingat: 'NUN SUKUN / TANWIN + BA (ب) = BERUBAH JADI MIM (M) + DENGUNG'",
+            howToRead: "Ubah bunyi 'N' menjadi 'M' dengan merapatkan kedua bibir secara lembut sambil berdengung 2 ketukan.",
+            analogy: {
+              title: "Analogi Kostum Mim 🎭",
+              text: "Saat huruf Nun bertemu si Ba (ب), Nun berganti kostum menjadi huruf Mim (M)! Bibir pun merapat lembut sambil berdengung."
+            },
+            examples: [
+              { ar: "لَيُ<span class='text-purple-700 bg-purple-100 px-1 rounded'>نْۢبَ</span>ذَنَّ فِى الْحُطَمَةِۖ", surah: "QS. Al-Humazah: 4", reason: "Nun sukun (نْ) bertemu huruf Ba (ب).", how: "Dibaca 'layumbażanna' (bunyi N berubah jadi M berdengung)." },
+              { ar: "مِ<span class='text-purple-700 bg-purple-100 px-1 rounded'>نْۢ بَ</span>عْدِ مَا جَاۤءَتْهُمُ الْبَيِّنَةُۗ", surah: "QS. Al-Bayyinah: 4", reason: "Nun sukun (نْ) bertemu huruf Ba (ب).", how: "Dibaca 'mim ba'di' dengan dengung 2 ketukan." },
+              { ar: "سَمِيْ<span class='text-purple-700 bg-purple-100 px-1 rounded'>عٌۢ بَ</span>صِيْرٌ", surah: "QS. Al-Isra: 1", reason: "Dhommatain (ـٌ) bertemu huruf Ba (ب).", how: "Dibaca 'samī'um baṣīr'." }
+            ],
+            comparison: {
+              title: "Iqlab vs Ikhfa' Syafawi",
+              colA: "Iqlab",
+              colB: "Ikhfa' Syafawi",
+              rows: [
+                ["Asalnya NUN SUKUN (نْ) atau TANWIN bertemu ب", "Asalnya MIM SUKUN (مْ) bertemu ب"],
+                ["Ditandai huruf Mim kecil (مۢ) di mushaf", "Mim sukun langsung bertemu Ba"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Tetap membaca bunyi 'N' (layunbażanna).", right: "Mengganti bunyi menjadi 'M' (layumbażanna) dengan bibir merapat lembut." }
+            ],
+            summary: {
+              hukum: "Iqlab",
+              ciri: "نْ atau Tanwin bertemu huruf Ba (ب)",
+              huruf: "ب (hanya 1 huruf)",
+              cara: "Bunyi N diganti menjadi M disertai dengung 2 ketukan",
+              contoh: "لَيُنْۢبَذَنَّ (QS. Al-Humazah: 4)"
+            },
+            teacherNote: "Tunjukkan simbol Mim kecil (مۢ) di atas Nun atau Tanwin pada mushaf sebagai penanda visual bagi anak kelas 3."
+          },
+          {
+            id: "2-5",
+            name: "5. Ikhfa' Haqiqi",
+            arabicTitle: "اِخْفَاءٌ حَقِيْقِيٌّ",
+            pronunciation: "Dibaca: Ikh-fa' Ha-qi-qi",
+            definition: "Ikhfa' artinya samar. Apabila Nun Sukun (نْ) atau Tanwin bertemu salah satu dari 15 huruf Ikhfa', bunyinya dibaca samar antara 'N' dan 'NG' disertai dengung 2 ketukan.",
+            signs: "Nun Sukun (نْ) atau Tanwin bertemu salah satu dari 15 huruf: ت ث ج د ذ ز س ش ص ض ط ظ ف ق ك.",
+            letters: ["ت", "ث", "ج", "د", "ذ", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ف", "ق", "ك"],
+            formula: "Kunci Ingat: '15 HURUF SELAIN IDHAR, IDGHOM, IQLAB = SAMAR + DENGUNG 2 KETUKAN'",
+            howToRead: "Samarkan bunyi 'N' sambil bersiap mengucapkan huruf berikutnya, dengan dengung 2 ketukan.",
+            analogy: {
+              title: "Analogi Lampu Kuning Hati-Hati 🟡",
+              text: "Seperti lampu kuning di jalan raya! Tidak berhenti total, tapi melambat dan bersiap. Saat membaca Ikhfa', suara ditahan samar 2 ketukan sambil lidah bersiap ke huruf depannya."
+            },
+            examples: [
+              { ar: "مِ<span class='text-orange-700 bg-orange-100 px-1 rounded'>نْ شَ</span>رِّ مَا خَلَقَۙ", surah: "QS. Al-Falaq: 2", reason: "Nun sukun (نْ) bertemu huruf Syin (ش).", how: "Dibaca samar berdengung 'min syarri' 2 ketukan." },
+              { ar: "اِنَّ الْاِ<span class='text-orange-700 bg-orange-100 px-1 rounded'>نْسَ</span>انَ لَفِيْ خُسْرٍۙ", surah: "QS. Al-'Ashr: 2", reason: "Nun sukun (نْ) bertemu huruf Sin (س).", how: "Dibaca samar berdengung 'al-insāna' 2 ketukan." },
+              { ar: "مِ<span class='text-orange-700 bg-orange-100 px-1 rounded'>نْ جُ</span>وْعٍ", surah: "QS. Quraisy: 4", reason: "Nun sukun (نْ) bertemu huruf Jim (ج).", how: "Dibaca samar berdengung 'min jū'' 2 ketukan." }
+            ],
+            comparison: {
+              title: "Ikhfa' Haqiqi vs Idhar Halqi",
+              colA: "Ikhfa' Haqiqi (15 Huruf)",
+              colB: "Idhar Halqi (6 Huruf)",
+              rows: [
+                ["Dibaca SAMAR dan berdengung 2 ketukan", "Dibaca JELAS tanpa dengung"],
+                ["Ujung lidah tidak menempel langit-langit untuk bunyi N", "Ujung lidah menempel jelas mengucapkan N"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca bunyi 'N' terlalu jelas seperti Idhar.", right: "Menyamarkan bunyi menuju makhraj huruf setelahnya dengan dengung 2 ketukan." }
+            ],
+            summary: {
+              hukum: "Ikhfa' Haqiqi",
+              ciri: "نْ atau Tanwin bertemu 15 huruf Ikhfa'",
+              huruf: "ت ث ج د ذ ز س ش ص ض ط ظ ف ق ك",
+              cara: "Dibaca samar disertai dengung 2 ketukan",
+              contoh: "مِنْ شَرِّ مَا خَلَقَ (QS. Al-Falaq: 2)"
+            },
+            teacherNote: "Ajarkan anak bahwa huruf Ikhfa' adalah seluruh sisa huruf hijaiyah setelah dikurangi 6 huruf Idhar, 6 huruf Idghom, dan 1 huruf Iqlab."
+          }
+        ]
+      },
+      {
+        bab: 3,
+        title: "BAB 3 — MIM SUKUN",
+        icon: "👄",
+        islandName: "Lembah 3 Hukum Mim Sukun",
+        subchapters: [
+          {
+            id: "3-1",
+            name: "1. Idhar Syafawi",
+            arabicTitle: "اِظْهَارٌ شَفَوِيٌّ",
+            pronunciation: "Dibaca: Idz-har Sya-fa-wi",
+            definition: "Idhar Syafawi adalah apabila Mim Sukun (مْ) bertemu salah satu dari 26 huruf hijaiyah selain Mim (م) dan Ba (ب). Cara membacanya jelas di bibir tanpa dengung.",
+            signs: "Huruf Mim Sukun (مْ) bertemu huruf apa saja selain م dan ب.",
+            letters: ["Semua huruf selain م dan ب (26 huruf)"],
+            formula: "Kunci Ingat: 'MIM SUKUN + SELAIN MIM & BA = JELAS DI BIBIR (TANPA DENGUNG)'",
+            howToRead: "Rapatkan bibir sebentar untuk mengucapkan bunyi 'M' dengan jelas, lalu langsung lanjut ke huruf berikutnya tanpa ditahan.",
+            analogy: {
+              title: "Analogi Ketukan Pintu Sekali 'Tok!' 🚪",
+              text: "Bibir merapat sekali dengan mantap lalu langsung terbuka membaca huruf berikutnya, tidak ditahan lama."
+            },
+            examples: [
+              { ar: "اَلَ<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>مْ تَ</span>رَ كَيْفَ فَعَلَ رَبُّكَ", surah: "QS. Al-Fil: 1", reason: "Mim sukun (مْ) bertemu huruf Ta (ت).", how: "Dibaca jelas 'alam tara' tanpa dengung." },
+              { ar: "لَـكُ<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>مْ دِ</span>يْنُكُمْ وَلِيَ دِيْنِ", surah: "QS. Al-Kafirun: 6", reason: "Mim sukun (مْ) bertemu huruf Dal (د).", how: "Dibaca jelas 'lakum dīnukum'." },
+              { ar: "عَلَيْهِ<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>مْ و</span>َلَا الضَّاۤلِّيْنَ", surah: "QS. Al-Fatihah: 7", reason: "Mim sukun (مْ) bertemu huruf Wawu (و).", how: "Dibaca sangat jelas 'alaihim wa' (hati-hati jangan berdengung saat bertemu Wawu/Fa)." }
+            ],
+            comparison: {
+              title: "Idhar Syafawi vs Ikhfa' Syafawi",
+              colA: "Idhar Syafawi",
+              colB: "Ikhfa' Syafawi",
+              rows: [
+                ["Mim Sukun bertemu selain م dan ب", "Mim Sukun bertemu huruf Ba (ب)"],
+                ["Dibaca JELAS tanpa dengung", "Dibaca SAMAR dengan dengung 2 ketukan"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Menahan dengung saat Mim Sukun bertemu Wawu (و) atau Fa (ف).", right: "Membaca Mim Sukun secara jelas dan singkat sebelum mengucapkan Wawu atau Fa." }
+            ],
+            summary: {
+              hukum: "Idhar Syafawi",
+              ciri: "Mim Sukun (مْ) bertemu huruf selain م dan ب",
+              huruf: "26 huruf selain م dan ب",
+              cara: "Dibaca jelas di bibir tanpa dengung",
+              contoh: "اَلَمْ تَرَ كَيْفَ (QS. Al-Fil: 1)"
+            },
+            teacherNote: "Tekankan kewaspadaan ekstra ketika Mim Sukun bertemu Wawu (و) dan Fa (ف) karena sama-sama huruf bibir."
+          },
+          {
+            id: "3-2",
+            name: "2. Idghom Mitsli",
+            arabicTitle: "اِدْغَامٌ مِثْلِيٌّ",
+            pronunciation: "Dibaca: Id-ghom Mits-li",
+            definition: "Idghom Mitsli (sering juga disebut Idghom Mimi) adalah apabila Mim Sukun (مْ) bertemu huruf Mim berharakat (م). Keduanya melebur menjadi satu Mim bertasydid disertai dengung 2 ketukan.",
+            signs: "Mim Sukun (مْ) bertemu huruf Mim (م).",
+            letters: ["م"],
+            formula: "Kunci Ingat: 'MIM SUKUN (مْ) + MIM (م) = MELEBUR BERDENGUNG 2 KETUKAN'",
+            howToRead: "Rapatkan kedua bibir dan tahan suara dengung di hidung selama 2 ketukan.",
+            analogy: {
+              title: "Analogi Anak Kembar Identik 👯",
+              text: "Mim Sukun bertemu kembarannya yaitu huruf Mim! Keduanya berpelukan erat menjadi satu dan berdengung selama 2 ketukan."
+            },
+            examples: [
+              { ar: "اَطْعَمَهُ<span class='text-amber-700 bg-amber-100 px-1 rounded'>مْ مِّ</span>نْ جُوْعٍ", surah: "QS. Quraisy: 4", reason: "Mim sukun (مْ) bertemu huruf Mim (مِّ).", how: "Melebur berdengung 'aṭ'amahum-min' 2 ketukan." },
+              { ar: "وَّاٰمَنَهُ<span class='text-amber-700 bg-amber-100 px-1 rounded'>مْ مِّ</span>نْ خَوْفٍ", surah: "QS. Quraisy: 4", reason: "Mim sukun (مْ) bertemu huruf Mim (مِّ).", how: "Melebur berdengung 'wa āmanahum-min' 2 ketukan." },
+              { ar: "عَلَيْهِ<span class='text-amber-700 bg-amber-100 px-1 rounded'>مْ مُّ</span>ؤْصَدَةٌۙ", surah: "QS. Al-Humazah: 8", reason: "Mim sukun (مْ) bertemu huruf Mim (مُّ).", how: "Melebur berdengung 'alaihim-mu'ṣadah' 2 ketukan." }
+            ],
+            comparison: {
+              title: "Idghom Mitsli vs Idghom Bighunnah",
+              colA: "Idghom Mitsli",
+              colB: "Idghom Bighunnah",
+              rows: [
+                ["Huruf pertamanya MIM SUKUN (مْ)", "Huruf pertamanya NUN SUKUN (نْ) / TANWIN"],
+                ["Bertemu huruf Mim (م)", "Bertemu huruf ي ن م و"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca terputus menjadi dua Mim tanpa dengung.", right: "Menyatukan keduanya menjadi satu Mim bertasydid yang berdengung 2 ketukan." }
+            ],
+            summary: {
+              hukum: "Idghom Mitsli",
+              ciri: "Mim Sukun (مْ) bertemu Mim (م)",
+              huruf: "م",
+              cara: "Melebur menjadi satu disertai dengung 2 ketukan",
+              contoh: "اَطْعَمَهُمْ مِّنْ جُوْعٍ (QS. Quraisy: 4)"
+            },
+            teacherNote: "Di mushaf standar Indonesia, huruf Mim kedua sudah diberi tanda tasydid untuk memudahkan peserta didik."
+          },
+          {
+            id: "3-3",
+            name: "3. Ikhfa' Syafawi",
+            arabicTitle: "اِخْفَاءٌ شَفَوِيٌّ",
+            pronunciation: "Dibaca: Ikh-fa' Sya-fa-wi",
+            definition: "Ikhfa' Syafawi adalah apabila Mim Sukun (مْ) bertemu huruf Ba (ب). Cara membacanya samar di bibir disertai dengung 2 ketukan.",
+            signs: "Mim Sukun (مْ) bertemu huruf Ba (ب).",
+            letters: ["ب"],
+            formula: "Kunci Ingat: 'MIM SUKUN (مْ) + BA (ب) = SAMAR DI BIBIR + DENGUNG 2 KETUKAN'",
+            howToRead: "Tahan bunyi Mim Sukun di bibir secara lembut (tidak ditekan keras) sambil berdengung 2 ketukan sebelum mengucapkan huruf Ba.",
+            analogy: {
+              title: "Analogi Bibir Menyentuh Selembar Kertas 📄",
+              text: "Saat Mim Sukun bertemu Ba, rapatkan bibir dengan sangat lembut (seolah menjepit selembar kertas tipis) sambil berdengung 2 ketukan."
+            },
+            examples: [
+              { ar: "تَرْمِيْهِ<span class='text-purple-700 bg-purple-100 px-1 rounded'>مْ بِ</span>حِجَارَةٍ مِّنْ سِجِّيْلٍۙ", surah: "QS. Al-Fil: 4", reason: "Mim sukun (مْ) bertemu huruf Ba (ب).", how: "Dibaca samar berdengung 'tarmīhim biḥijārah' 2 ketukan." },
+              { ar: "اِنَّ رَبَّهُ<span class='text-purple-700 bg-purple-100 px-1 rounded'>مْ بِ</span>هِمْ يَوْمَىِٕذٍ لَّخَبِيْرٌ", surah: "QS. Al-'Adiyat: 11", reason: "Mim sukun (مْ) bertemu huruf Ba (ب).", how: "Dibaca samar berdengung 'rabbahum bihim' 2 ketukan." },
+              { ar: "وَمَا هُ<span class='text-purple-700 bg-purple-100 px-1 rounded'>مْ بِ</span>مُؤْمِنِيْنَۘ", surah: "QS. Al-Baqarah: 8", reason: "Mim sukun (مْ) bertemu huruf Ba (ب).", how: "Dibaca samar berdengung 'hum bimu'minīn'." }
+            ],
+            comparison: {
+              title: "Ikhfa' Syafawi vs Idhar Syafawi",
+              colA: "Ikhfa' Syafawi",
+              colB: "Idhar Syafawi",
+              rows: [
+                ["Mim Sukun bertemu huruf Ba (ب)", "Mim Sukun bertemu selain م dan ب"],
+                ["Dibaca SAMAR + DENGUNG 2 ketukan", "Dibaca JELAS tanpa dengung"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca Mim Sukun terlalu cepat tanpa dengung.", right: "Menahan dengung lembut pada bibir selama 2 ketukan." }
+            ],
+            summary: {
+              hukum: "Ikhfa' Syafawi",
+              ciri: "Mim Sukun (مْ) bertemu huruf Ba (ب)",
+              huruf: "ب",
+              cara: "Dibaca samar di bibir disertai dengung 2 ketukan",
+              contoh: "تَرْمِيْهِمْ بِحِجَارَةٍ (QS. Al-Fil: 4)"
+            },
+            teacherNote: "Bantu anak membedakan Ikhfa' Syafawi (مْ + ب) dengan Iqlab (نْ / tanwin + ب)."
+          }
+        ]
+      },
+      {
+        bab: 4,
+        title: "BAB 4 — IDGHOM",
+        icon: "🤝",
+        islandName: "Jembatan Pertemuan 3 Idghom",
+        subchapters: [
+          {
+            id: "4-1",
+            name: "1. Idghom Mutamatsilain",
+            arabicTitle: "اِدْغَامٌ مُتَمَاثِلَيْنِ",
+            pronunciation: "Dibaca: Id-ghom Mu-ta-ma-tsi-lain",
+            definition: "Idghom Mutamatsilain adalah pertemuan dua huruf yang sama persis makhraj (tempat keluar) dan sifatnya; huruf pertama sukun dan huruf kedua berharakat.",
+            signs: "Dua huruf kembar berdampingan, yang pertama sukun dan yang kedua berharakat (misalnya: بْ + ب, دْ + د, تْ + ت).",
+            letters: ["Dua huruf yang sama (contoh: بْ+ب, دْ+د, كْ+ك)"],
+            formula: "Kunci Ingat: 'MUTAMATSILAIN = DUA HURUF KEMBAR SAMA PERSIS'",
+            howToRead: "Masukkan huruf pertama yang sukun ke huruf kedua yang berharakat sehingga terdengar seperti satu huruf bertasydid (tanpa dengung, kecuali مْ+م dan نْ+ن).",
+            analogy: {
+              title: "Analogi Cermin Kembar 🪞",
+              text: "Seperti melihat wajah sendiri di cermin—sama persis! Huruf pertama masuk menyatu ke kembarannya."
+            },
+            examples: [
+              { ar: "اِذْهَ<span class='text-teal-700 bg-teal-100 px-1 rounded'>بْ بِّ</span>كِتٰبِيْ هٰذَا", surah: "QS. An-Naml: 28", reason: "Ba sukun (بْ) bertemu Ba kasrah (بِ).", how: "Dibaca melebur 'iżhab-bikitābī'." },
+              { ar: "وَقَ<span class='text-teal-700 bg-teal-100 px-1 rounded'>دْ دَّ</span>خَلُوْا بِالْكُفْرِ", surah: "QS. Al-Ma'idah: 61", reason: "Dal sukun (دْ) bertemu Dal fathah (دَ).", how: "Dibaca melebur 'wa qad-dakhalū'." },
+              { ar: "فَمَا رَبِحَ<span class='text-teal-700 bg-teal-100 px-1 rounded'>تْ تِّ</span>جَارَتُهُمْ", surah: "QS. Al-Baqarah: 16", reason: "Ta sukun (تْ) bertemu Ta kasrah (تِ).", how: "Dibaca melebur 'rabiḥat-tijāratuhum'." }
+            ],
+            comparison: {
+              title: "Perbedaan 3 Jenis Idghom Bab 4",
+              colA: "Mutamatsilain",
+              colB: "Mutajanisain & Mutaqoribain",
+              rows: [
+                ["Dua huruf SAMA PERSIS (misal: دْ + د)", "Mutajanisain: makhraj sama, sifat beda (تْ + ط)"],
+                ["Selalu melebur sempurna", "Mutaqoribain: makhraj & sifat berdekatan (قْ + ك)"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Memantulkan Qolqolah pada huruf pertama (misal: 'wa qad-e dakhalu').", right: "Langsung memasukkan Dal pertama ke Dal kedua tanpa dipantulkan." }
+            ],
+            summary: {
+              hukum: "Idghom Mutamatsilain",
+              ciri: "Huruf sukun bertemu huruf yang sama persis",
+              huruf: "Dua huruf identik (بْ+ب، دْ+د، تْ+ت، dll)",
+              cara: "Melebur menjadi satu huruf bertasydid",
+              contoh: "وَقَدْ دَّخَلُوْا (QS. Al-Ma'idah: 61)"
+            },
+            teacherNote: "Ingatkan anak agar tidak memantulkan huruf Qolqolah (ب، د) ketika bertemu huruf yang sama karena sudah melebur."
+          },
+          {
+            id: "4-2",
+            name: "2. Idghom Mutajanisain",
+            arabicTitle: "اِدْغَامٌ مُتَجَانِسَيْنِ",
+            pronunciation: "Dibaca: Id-ghom Mu-ta-ja-ni-sain",
+            definition: "Idghom Mutajanisain adalah pertemuan dua huruf yang sama tempat keluarnya (makhraj), tetapi berbeda sifatnya; huruf pertama sukun dan huruf kedua berharakat.",
+            signs: "Pertemuan huruf sejenis makhraj seperti: تْ bertemu ط atau د, دْ bertemu ت, ذْ bertemu ظ, ثْ bertemu ذ, بْ bertemu م.",
+            letters: ["تْ+ط", "طْ+ت", "دْ+ت", "تْ+د", "ذْ+ظ", "ثْ+ذ", "بْ+م"],
+            formula: "Kunci Ingat: 'MUTAJANISAIN = SATU RUMAH (MAKHRAJ SAMA), BEDA SIFAT'",
+            howToRead: "Masukkan bunyi huruf pertama ke huruf kedua yang bertasydid (khusus بْ bertemu م disertai dengung).",
+            analogy: {
+              title: "Analogi Tetangga Satu Rumah 🏠",
+              text: "Dua huruf tinggal di rumah yang sama (tempat keluar suara di mulut sama), sehingga huruf pertama mengalah dan melebur ke huruf kedua."
+            },
+            examples: [
+              { ar: "قَ<span class='text-indigo-700 bg-indigo-100 px-1 rounded'>دْ تَّ</span>بَيَّنَ الرُّشْدُ مِنَ الْغَيِّ", surah: "QS. Al-Baqarah: 256", reason: "Dal sukun (دْ) bertemu huruf Ta (ت).", how: "Dibaca melebur 'qat-tabayyana' (Dal masuk ke Ta)." },
+              { ar: "وَقَالَ<span class='text-indigo-700 bg-indigo-100 px-1 rounded'>تْ طَّا</span>ۤىِٕفَةٌ", surah: "QS. Ali 'Imran: 72", reason: "Ta sukun (تْ) bertemu huruf Tha (ط).", how: "Dibaca melebur 'wa qālaṭ-ṭā'ifah'." },
+              { ar: "اِرْكَ<span class='text-indigo-700 bg-indigo-100 px-1 rounded'>بْ مَّ</span>عَنَا", surah: "QS. Hud: 42", reason: "Ba sukun (بْ) bertemu huruf Mim (م).", how: "Dibaca melebur berdengung 'irkam-ma'anā'." }
+            ],
+            comparison: {
+              title: "Mutajanisain vs Mutaqoribain",
+              colA: "Idghom Mutajanisain",
+              colB: "Idghom Mutaqoribain",
+              rows: [
+                ["Makhrajnya SAMA, sifatnya berbeda", "Makhraj dan sifatnya BERDEKATAN"],
+                ["Contoh: دْ + ت (قَدْ تَّبَيَّنَ)", "Contoh: قْ + ك (اَلَمْ نَخْلُقْكُّمْ) atau لْ + ر (قُلْ رَّبِّ)"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca 'qad tabayyana' dengan memantulkan huruf Dal.", right: "Meleburkan Dal ke dalam Ta sehingga terbaca 'qat-tabayyana'." }
+            ],
+            summary: {
+              hukum: "Idghom Mutajanisain",
+              ciri: "Dua huruf sama makhraj, beda sifat",
+              huruf: "تْ+ط، دْ+ت، تْ+د، ذْ+ظ، ثْ+ذ، بْ+م",
+              cara: "Huruf pertama melebur ke huruf kedua",
+              contoh: "قَدْ تَّبَيَّنَ (QS. Al-Baqarah: 256)"
+            },
+            teacherNote: "Fokuskan latihan pada contoh yang sering ditemui anak seperti دْ+ت dan تْ+ط."
+          },
+          {
+            id: "4-3",
+            name: "3. Idghom Mutaqoribain",
+            arabicTitle: "اِدْغَامٌ مُتَقَارِبَيْنِ",
+            pronunciation: "Dibaca: Id-ghom Mu-ta-qo-ri-bain",
+            definition: "Idghom Mutaqoribain adalah pertemuan dua huruf yang berdekatan tempat keluar (makhraj) dan sifatnya; huruf pertama sukun dan huruf kedua berharakat.",
+            signs: "Pertemuan huruf yang berdekatan seperti: Lam sukun (لْ) bertemu Ra (ر), atau Qaf sukun (قْ) bertemu Kaf (ك).",
+            letters: ["لْ+ر", "قْ+ك"],
+            formula: "Kunci Ingat: 'MUTAQORIBAIN = TETANGGA DEKAT (لْ+ر dan قْ+ك)'",
+            howToRead: "Masukkan huruf pertama langsung ke huruf kedua tanpa jeda dan tanpa dengung.",
+            analogy: {
+              title: "Analogi Dua Rumah Bersebelahan 🏘️",
+              text: "Rumah Lam dan Ra atau Qaf dan Kaf letaknya bertetangga dekat sekali, sehingga bunyi huruf pertama langsung melompat masuk ke tetangganya."
+            },
+            examples: [
+              { ar: "وَقُ<span class='text-cyan-700 bg-cyan-100 px-1 rounded'>لْ رَّ</span>بِّ زِدْنِيْ عِلْمًا", surah: "QS. Thaha: 114", reason: "Lam sukun (لْ) bertemu huruf Ra (ر).", how: "Dibaca melebur 'wa qur-rabbi' (Lam masuk ke Ra)." },
+              { ar: "اَلَمْ نَخْلُ<span class='text-cyan-700 bg-cyan-100 px-1 rounded'>قْكُّ</span>مْ مِّنْ مَّاۤءٍ مَّهِيْنٍۙ", surah: "QS. Al-Mursalat: 20", reason: "Qaf sukun (قْ) bertemu huruf Kaf (ك).", how: "Dibaca melebur 'nakhluk-kum'." },
+              { ar: "بَ<span class='text-cyan-700 bg-cyan-100 px-1 rounded'>لْ رَّ</span>فَعَهُ اللّٰهُ اِلَيْهِ", surah: "QS. An-Nisa': 158", reason: "Lam sukun (لْ) bertemu huruf Ra (ر).", how: "Dibaca melebur 'bar-rafa'ahullāh'." }
+            ],
+            comparison: {
+              title: "Mutaqoribain vs Mutamatsilain",
+              colA: "Idghom Mutaqoribain",
+              colB: "Idghom Mutamatsilain",
+              rows: [
+                ["Dua huruf BERBEDA tetapi berdekatan (لْ+ر، قْ+ك)", "Dua huruf SAMA PERSIS (بْ+ب، دْ+د)"],
+                ["Contoh: قُلْ رَّبِّ", "Contoh: قَدْ دَّخَلُوْا"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca 'qul rabbi' dengan membunyikan huruf L secara terpisah.", right: "Langsung melebur menjadi 'qur-rabbi'." }
+            ],
+            summary: {
+              hukum: "Idghom Mutaqoribain",
+              ciri: "Dua huruf berdekatan makhraj dan sifatnya",
+              huruf: "لْ+ر dan قْ+ك",
+              cara: "Melebur ke huruf kedua tanpa dengung",
+              contoh: "وَقُلْ رَّبِّ زِدْنِيْ عِلْمًا (QS. Thaha: 114)"
+            },
+            teacherNote: "Doa 'Rabbi zidni ilma' (QS. Thaha: 114) sangat akrab bagi anak kelas 3 SD sehingga mudah dijadikan contoh utama."
+          }
+        ]
+      },
+      {
+        bab: 5,
+        title: "BAB 5 — IDZHAR WAJIB",
+        icon: "🛡️",
+        islandName: "Benteng 4 Kata Idzhar Wajib",
+        subchapters: [
+          {
+            id: "5-1",
+            name: "Idzhar Wajib (Idzhar Muthlaq)",
+            arabicTitle: "اِظْهَارٌ وَاجِبٌ",
+            pronunciation: "Dibaca: Idz-har Wa-jib",
+            definition: "Idzhar Wajib terjadi apabila Nun Sukun (نْ) bertemu huruf Ya (ي) atau Wawu (و) di dalam SATU KATA. Bacaannya wajib dibaca jelas dan tidak boleh dilebur.",
+            signs: "Nun Sukun (نْ) bertemu ي atau و dalam satu kata. Di seluruh Al-Qur'an hanya terdapat pada 4 kata!",
+            letters: ["نْ + ي (dalam 1 kata)", "نْ + و (dalam 1 kata)"],
+            formula: "Kunci Ingat: '4 KATA ISTIMEWA (اَلدُّنْيَا - بُنْيَانٌ - صِنْوَانٌ - قِنْوَانٌ) = WAJIB JELAS!'",
+            howToRead: "Bunyi 'N' pada Nun Sukun dibaca jelas dan terang, tidak boleh masuk/melebur ke huruf Ya atau Wawu.",
+            analogy: {
+              title: "Analogi Satu Rumah Keluarga 🏡",
+              text: "Kalau Idghom Bighunnah terjadi di dua rumah (dua kata) yang berbeda, Idzhar Wajib tinggal di SATU RUMAH (satu kata) sehingga huruf Nun tetap berdiri jelas menjaga arti katanya!"
+            },
+            examples: [
+              { ar: "فِى <span class='text-emerald-700 bg-emerald-100 px-1 rounded'>الدُّنْيَ</span>ا حَسَنَةً", surah: "QS. Al-Baqarah: 201", reason: "Nun sukun (نْ) bertemu Ya (ي) dalam satu kata.", how: "Dibaca jelas 'ad-dunyā' (bukan ad-duyyā)." },
+              { ar: "كَاَنَّهُمْ <span class='text-emerald-700 bg-emerald-100 px-1 rounded'>بُنْيَ</span>انٌ مَّرْصُوْصٌ", surah: "QS. Ash-Shaff: 4", reason: "Nun sukun (نْ) bertemu Ya (ي) dalam satu kata.", how: "Dibaca jelas 'bun-yānun'." },
+              { ar: "<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>قِنْوَ</span>انٌ دَانِيَةٌ", surah: "QS. Al-An'am: 99", reason: "Nun sukun (نْ) bertemu Wawu (و) dalam satu kata.", how: "Dibaca jelas 'qin-wānun' (dan kata ke-4 adalah صِنْوَانٌ dalam QS. Ar-Ra'd: 4)." }
+            ],
+            comparison: {
+              title: "Idzhar Wajib vs Idghom Bighunnah",
+              colA: "Idzhar Wajib",
+              colB: "Idghom Bighunnah",
+              rows: [
+                ["نْ bertemu ي / و dalam SATU KATA", "نْ bertemu ي / و dalam DUA KATA"],
+                ["Dibaca JELAS tanpa dengung", "Dibaca MELEBUR dengan dengung 2 ketukan"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca 'ad-duyya' karena mengira semua نْ + ي dilebur.", right: "Membaca jelas 'ad-dunyā' karena berada dalam satu kata." }
+            ],
+            summary: {
+              hukum: "Idzhar Wajib",
+              ciri: "نْ bertemu ي atau و dalam satu kata (hanya 4 kata)",
+              huruf: "ي dan و (dalam satu kata)",
+              cara: "Wajib dibaca jelas tanpa dengung",
+              contoh: "اَلدُّنْيَا، بُنْيَانٌ، صِنْوَانٌ، قِنْوَانٌ"
+            },
+            teacherNote: "Ajak anak menghafal keempat kata khusus ini sebagai harta karun hafalan Bab 5."
+          }
+        ]
+      },
+      {
+        bab: 6,
+        title: "BAB 6 — ALIF LAM (AL TA'RIF)",
+        icon: "🌙",
+        islandName: "Langit Bulan & Matahari",
+        subchapters: [
+          {
+            id: "6-1",
+            name: "1. Idzhar Qomariyah",
+            arabicTitle: "اِظْهَارٌ قَمَرِيَّةٌ",
+            pronunciation: "Dibaca: Idz-har Qo-ma-ri-yah",
+            definition: "Idzhar Qomariyah adalah apabila Alif Lam (ال) bertemu salah satu dari 14 huruf Qomariyah. Huruf Lam-nya memakai tanda sukun (لْ) dan dibaca jelas.",
+            signs: "Terdapat tanda sukun di atas huruf Lam (اَلْ) dan huruf sesudahnya tidak bertasydid.",
+            letters: ["ا", "ب", "غ", "ح", "ج", "ك", "و", "خ", "ف", "ع", "ق", "ي", "م", "هـ"],
+            formula: "Kunci Ingat: 'ADA SUKUN DI LAM (اَلْ) = LAM TERLIHAT JELAS SEPERTI BULAN (QOMAR)'",
+            howToRead: "Bunyi huruf Lam (L) dibaca jelas dan terang sebelum mengucapkan huruf berikutnya.",
+            analogy: {
+              title: "Analogi Bulan di Malam Hari (Al-Qomar) 🌙",
+              text: "Saat malam hari melihat bulan (اَلْقَمَرُ), bintang-bintang di langit tetap terlihat jelas! Begitu pula huruf Lam (اَلْ) yang terdengar jelas."
+            },
+            examples: [
+              { ar: "اَلْحَمْدُ لِلّٰهِ رَبِّ <span class='text-sky-700 bg-sky-100 px-1 rounded'>الْعٰ</span>لَمِيْنَۙ", surah: "QS. Al-Fatihah: 2", reason: "Alif Lam (اَلْ) bertemu huruf 'Ain (ع).", how: "Huruf Lam dibaca jelas 'al-'ālamīn'." },
+              { ar: "قُلْ اَعُوْذُ بِرَبِّ <span class='text-sky-700 bg-sky-100 px-1 rounded'>الْفَ</span>لَقِۙ", surah: "QS. Al-Falaq: 1", reason: "Alif Lam (اَلْ) bertemu huruf Fa (ف).", how: "Huruf Lam dibaca jelas 'al-falaq'." },
+              { ar: "اِنَّآ اَعْطَيْنٰكَ <span class='text-sky-700 bg-sky-100 px-1 rounded'>الْكَ</span>وْثَرَۗ", surah: "QS. Al-Kautsar: 1", reason: "Alif Lam (اَلْ) bertemu huruf Kaf (ك).", how: "Huruf Lam dibaca jelas 'al-kauṡar'." }
+            ],
+            comparison: {
+              title: "Idzhar Qomariyah vs Idghom Syamsiyyah",
+              colA: "Idzhar Qomariyah (Bulan 🌙)",
+              colB: "Idghom Syamsiyyah (Matahari ☀️)",
+              rows: [
+                ["Huruf Lam memakai SUKUN (اَلْ)", "Huruf Lam TIDAK bersukun, huruf depannya BERTASYDID (اَلنَّ)"],
+                ["Bunyi L dibaca JELAS", "Bunyi L melebur (tidak terdengar)"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Menghilangkan bunyi L pada Al-Falaq.", right: "Membaca jelas bunyi L pada 'al-falaq'." }
+            ],
+            summary: {
+              hukum: "Idzhar Qomariyah",
+              ciri: "Alif Lam bersukun (اَلْ) bertemu 14 huruf Qomariyah",
+              huruf: "ا ب غ ح ج ك و خ ف ع ق ي م هـ",
+              cara: "Huruf Lam dibaca jelas",
+              contoh: "اَلْحَمْدُ، اَلْفَلَقِ، اَلْكَوْثَرَ"
+            },
+            teacherNote: "Ciri visual mushaf yang paling membantu anak kelas 3 SD adalah adanya sukun di atas huruf Lam."
+          },
+          {
+            id: "6-2",
+            name: "2. Idghom Syamsiyyah",
+            arabicTitle: "اِدْغَامٌ شَمْسِيَّةٌ",
+            pronunciation: "Dibaca: Id-ghom Syam-si-yah",
+            definition: "Idghom Syamsiyyah adalah apabila Alif Lam (ال) bertemu salah satu dari 14 huruf Syamsiyyah. Bunyi Lam melebur masuk ke huruf berikutnya yang bertasydid.",
+            signs: "Huruf Lam tidak memakai sukun (ال) dan huruf setelahnya memiliki tanda tasydid ( ّ ).",
+            letters: ["ت", "ث", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ل", "ن"],
+            formula: "Kunci Ingat: 'LAM TANPA SUKUN + HURUF BERTASYDID = BUNYI L MELEBUR SEPERTI MATAHARI'",
+            howToRead: "Langsung melompat dari Alif ke huruf yang bertasydid tanpa membunyikan huruf Lam.",
+            analogy: {
+              title: "Analogi Matahari di Siang Hari (Asy-Syams) ☀️",
+              text: "Saat siang hari matahari bersinar terang (اَلشَّمْسُ), bintang-bintang di langit tidak tampak karena sinarnya kalah oleh matahari. Begitu pula bunyi Lam yang melebur ke huruf bertasydid!"
+            },
+            examples: [
+              { ar: "قُلْ اَعُوْذُ بِرَبِّ <span class='text-amber-700 bg-amber-100 px-1 rounded'>النَّ</span>اسِۙ", surah: "QS. An-Naas: 1", reason: "Alif Lam bertemu huruf Nun bertasydid (نَّ).", how: "Dibaca 'birabbin-nās' (bunyi L tidak dibaca)." },
+              { ar: "<span class='text-amber-700 bg-amber-100 px-1 rounded'>الرَّ</span>حْمٰنِ <span class='text-amber-700 bg-amber-100 px-1 rounded'>الرَّ</span>حِيْمِۙ", surah: "QS. Al-Fatihah: 3", reason: "Alif Lam bertemu huruf Ra bertasydid (رَّ).", how: "Dibaca 'ar-raḥmānir-raḥīm'." },
+              { ar: "اِهْدِنَا <span class='text-amber-700 bg-amber-100 px-1 rounded'>الصِّ</span>رَاطَ الْمُسْتَقِيْمَۙ", surah: "QS. Al-Fatihah: 6", reason: "Alif Lam bertemu huruf Shad bertasydid (صِّ).", how: "Dibaca 'ihdinaṣ-ṣirāṭal-mustaqīm'." }
+            ],
+            comparison: {
+              title: "Idghom Syamsiyyah vs Idzhar Qomariyah",
+              colA: "Idghom Syamsiyyah (☀️)",
+              colB: "Idzhar Qomariyah (🌙)",
+              rows: [
+                ["Huruf setelah Lam BERTASYDID", "Huruf Lam BERSUKUN (اَلْ)"],
+                ["Bunyi L melebur / tidak dibaca", "Bunyi L dibaca jelas"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca 'Al-Naas' atau 'Al-Rahman'.", right: "Langsung melebur menjadi 'An-Nās' dan 'Ar-Raḥmān'." }
+            ],
+            summary: {
+              hukum: "Idghom Syamsiyyah",
+              ciri: "Alif Lam tanpa sukun diikuti huruf bertasydid",
+              huruf: "ت ث د ذ ر ز س ش ص ض ط ظ ل ن",
+              cara: "Bunyi Lam melebur ke huruf bertasydid",
+              contoh: "اَلنَّاسِ، اَلرَّحْمٰنِ، اَلشَّمْسِ"
+            },
+            teacherNote: "Bandingkan langsung kata اَلْقَمَرُ (Qomariyah) dan اَلشَّمْسُ (Syamsiyyah) agar asal-usul namanya melekat kuat."
+          }
+        ]
+      },
+      {
+        bab: 7,
+        title: "BAB 7 — LAFDZUL JALALAH",
+        icon: "✨",
+        islandName: "Cahaya Nama Allah (Lafdzul Jalalah)",
+        subchapters: [
+          {
+            id: "7-1",
+            name: "1. Tafkhim (Lafdzul Jalalah Tebal)",
+            arabicTitle: "تَفْخِيْمٌ",
+            pronunciation: "Dibaca: Taf-khim",
+            definition: "Tafkhim pada Lafdzul Jalalah (لَفْظُ الْجَلَالَةِ / kata اللّٰهُ) artinya membaca huruf Lam pada kata Allah dengan tebal apabila didahului harakat Fathah (ـَ) atau Dhommah (ـُ).",
+            signs: "Huruf sebelum kata اللّٰهُ berharakat Fathah (ـَ) atau Dhommah (ـُ), atau berada di awal kalimat.",
+            letters: ["Fathah (ـَ) + اللّٰهُ", "Dhommah (ـُ) + اللّٰهُ"],
+            formula: "Kunci Ingat: 'FATHAH / DHOMMAH + اللّٰهُ = DIBACA TEBAL (ALLOOH)'",
+            howToRead: "Angkat pangkal lidah dan penuhi rongga mulut sehingga bunyi Lam terdengar tebal dan agung ('Allōh').",
+            analogy: {
+              title: "Analogi Suara Agung & Penuh 🏔️",
+              text: "Saat didahului harakat atas (Fathah) atau depan (Dhommah), suara pada nama Allah diucapkan penuh dan tebal dengan penuh pengagungan."
+            },
+            examples: [
+              { ar: "قُلْ هُ<span class='text-amber-700 bg-amber-100 px-1 rounded'>وَ اللّٰهُ</span> اَحَدٌۚ", surah: "QS. Al-Ikhlas: 1", reason: "Sebelum kata اللّٰهُ ada harakat Fathah (وَ).", how: "Dibaca tebal 'qul huwallōhu aḥad'." },
+              { ar: "اِذَا جَاۤءَ نَصْ<span class='text-amber-700 bg-amber-100 px-1 rounded'>رُ اللّٰهِ</span> وَالْفَتْحُۙ", surah: "QS. An-Nashr: 1", reason: "Sebelum kata اللّٰهِ ada harakat Dhommah (رُ).", how: "Dibaca tebal 'naṣrullōhi'." },
+              { ar: "<span class='text-amber-700 bg-amber-100 px-1 rounded'>اَللّٰهُ</span> الصَّمَدُۚ", surah: "QS. Al-Ikhlas: 2", reason: "Kata اللّٰهُ berada di awal bacaan.", how: "Dibaca tebal 'Allōhuṣ-ṣamad'." }
+            ],
+            comparison: {
+              title: "Lafdzul Jalalah Tafkhim vs Tarqiq",
+              colA: "Tafkhim (Tebal)",
+              colB: "Tarqiq (Tipis)",
+              rows: [
+                ["Didahului harakat FATHAH (ـَ) atau DHOMMAH (ـُ)", "Didahului harakat KASRAH (ـِ)"],
+                ["Bunyi Lam tebal ('Allōh')", "Bunyi Lam tipis ('illāh')"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca tipis seperti huruf L biasa ('huwallahu').", right: "Membaca tebal dengan pangkal lidah terangkat ('huwallōhu')." }
+            ],
+            summary: {
+              hukum: "Lafdzul Jalalah Tafkhim",
+              ciri: "Kata اللّٰهُ didahului Fathah atau Dhommah",
+              huruf: "Harakat ـَ atau ـُ sebelum اللّٰهُ",
+              cara: "Dibaca tebal",
+              contoh: "قُلْ هُوَ اللّٰهُ اَحَدٌ (QS. Al-Ikhlas: 1)"
+            },
+            teacherNote: "Latih anak membedakan bunyi 'Allōh' (tebal) dan 'Lillāh' (tipis) secara berpasangan."
+          },
+          {
+            id: "7-2",
+            name: "2. Tarqiq (Lafdzul Jalalah Tipis)",
+            arabicTitle: "تَرْقِيْقٌ",
+            pronunciation: "Dibaca: Tar-qiq",
+            definition: "Tarqiq pada Lafdzul Jalalah artinya membaca huruf Lam pada kata Allah dengan tipis apabila didahului harakat Kasrah (ـِ).",
+            signs: "Huruf sebelum kata اللّٰهِ berharakat Kasrah (ـِ).",
+            letters: ["Kasrah (ـِ) + اللّٰهِ"],
+            formula: "Kunci Ingat: 'KASRAH (ـِ) + اللّٰهِ = DIBACA TIPIS (LILLAAH)'",
+            howToRead: "Posisikan lidah mendatar (tidak diangkat) sehingga bunyi Lam terdengar tipis dan ringan.",
+            analogy: {
+              title: "Analogi Senyum Ringan 😊",
+              text: "Saat harakat Kasrah (garis bawah) mendahului kata Allah, mulut tersenyum ringan dan suara Lam terdengar tipis lembut."
+            },
+            examples: [
+              { ar: "<span class='text-sky-700 bg-sky-100 px-1 rounded'>بِسْمِ اللّٰهِ</span> الرَّحْمٰنِ الرَّحِيْمِ", surah: "QS. Al-Fatihah: 1", reason: "Sebelum kata اللّٰهِ ada harakat Kasrah (مِ).", how: "Dibaca tipis 'bismillāhir-raḥmānir-raḥīm'." },
+              { ar: "اَلْحَمْدُ <span class='text-sky-700 bg-sky-100 px-1 rounded'>لِلّٰهِ</span> رَبِّ الْعٰلَمِيْنَۙ", surah: "QS. Al-Fatihah: 2", reason: "Sebelum kata اللّٰهِ ada harakat Kasrah (لِ).", how: "Dibaca tipis 'al-ḥamdu lillāhi'." },
+              { ar: "فِيْ دِيْ<span class='text-sky-700 bg-sky-100 px-1 rounded'>نِ اللّٰهِ</span> اَفْوَاجًاۙ", surah: "QS. An-Nashr: 2", reason: "Sebelum kata اللّٰهِ ada harakat Kasrah (نِ).", how: "Dibaca tipis 'fī dīnillāhi'." }
+            ],
+            comparison: {
+              title: "Tarqiq vs Tafkhim pada Lafdzul Jalalah",
+              colA: "Tarqiq (Tipis)",
+              colB: "Tafkhim (Tebal)",
+              rows: [
+                ["Harakat sebelumnya KASRAH (ـِ)", "Harakat sebelumnya FATHAH (ـَ) atau DHOMMAH (ـُ)"],
+                ["Contoh: بِسْمِ اللّٰهِ", "Contoh: نَصْرُ اللّٰهِ"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca 'Bismillōhi' dengan tebal.", right: "Membaca 'Bismillāhi' dengan tipis karena didahului Kasrah." }
+            ],
+            summary: {
+              hukum: "Lafdzul Jalalah Tarqiq",
+              ciri: "Kata اللّٰهِ didahului Kasrah (ـِ)",
+              huruf: "Harakat ـِ sebelum اللّٰهِ",
+              cara: "Dibaca tipis",
+              contoh: "بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ (QS. Al-Fatihah: 1)"
+            },
+            teacherNote: "Basmalah dan Hamdalah adalah contoh harian paling efektif untuk menguatkan konsep Tarqiq."
+          }
+        ]
+      },
+      {
+        bab: 8,
+        title: "BAB 8 — HUKUM RO'",
+        icon: "🔊",
+        islandName: "Bukit Tebal & Tipis Huruf Ra",
+        subchapters: [
+          {
+            id: "8-1",
+            name: "1. Ra Tafkhim (Ra Tebal)",
+            arabicTitle: "رَاءٌ تَفْخِيْمٌ",
+            pronunciation: "Dibaca: Ro Taf-khim",
+            definition: "Ra Tafkhim adalah membaca huruf Ra (ر) dengan tebal. Terjadi antara lain apabila Ra berharakat Fathah (رَ) atau Dhommah (رُ), atau Ra Sukun (رْ) didahului Fathah/Dhommah.",
+            signs: "Huruf Ra berharakat Fathah (رَ), Dhommah (رُ), Fathatain (رًا), Dhommatain (رٌ), atau Ra Sukun (رْ) yang sebelumnya berharakat Fathah atau Dhommah.",
+            letters: ["رَ", "رُ", "ـَ رْ", "ـُ رْ"],
+            formula: "Kunci Ingat: 'RA FATHAH / DHOMMAH = DIBACA TEBAL (RO)'",
+            howToRead: "Bulatkan bibir sedikit dan angkat pangkal lidah agar bunyi Ra terdengar tebal.",
+            analogy: {
+              title: "Analogi Suara Bass Tebal 🥁",
+              text: "Saat huruf Ra memakai harakat atas (Fathah) atau depan (Dhommah), bunyinya bulat dan tebal seperti suara drum bass."
+            },
+            examples: [
+              { ar: "اَلْحَمْدُ لِلّٰهِ <span class='text-amber-700 bg-amber-100 px-1 rounded'>رَ</span>بِّ الْعٰلَمِيْنَۙ", surah: "QS. Al-Fatihah: 2", reason: "Huruf Ra berharakat Fathah (رَ).", how: "Dibaca tebal 'rabbil-'ālamīn'." },
+              { ar: "اِذَا جَاۤءَ نَصْ<span class='text-amber-700 bg-amber-100 px-1 rounded'>رُ</span> اللّٰهِ وَالْفَتْحُۙ", surah: "QS. An-Nashr: 1", reason: "Huruf Ra berharakat Dhommah (رُ).", how: "Dibaca tebal 'naṣrullāhi'." },
+              { ar: "وَا<span class='text-amber-700 bg-amber-100 px-1 rounded'>رْ</span>سَلَ عَلَيْهِمْ طَيْرًا اَبَابِيْلَۙ", surah: "QS. Al-Fil: 3", reason: "Ra sukun (رْ) didahului harakat Fathah (اَ).", how: "Dibaca tebal 'wa arsala'." }
+            ],
+            comparison: {
+              title: "Ra Tafkhim vs Ra Tarqiq",
+              colA: "Ra Tafkhim (Tebal)",
+              colB: "Ra Tarqiq (Tipis)",
+              rows: [
+                ["Ra berharakat FATHAH / DHOMMAH", "Ra berharakat KASRAH (رِ)"],
+                ["Ra Sukun didahului Fathah/Dhommah", "Ra Sukun didahului Kasrah asli (contoh: فِرْعَوْنَ)"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Menggetarkan ujung lidah terlalu banyak (takrir berlebihan).", right: "Cukup satu getaran lembut yang mantap dengan posisi lidah tebal." }
+            ],
+            summary: {
+              hukum: "Hukum Ro' Tafkhim",
+              ciri: "Ra Fathah/Dhommah atau Ra Sukun setelah Fathah/Dhommah",
+              huruf: "رَ، رُ، ـَ رْ، ـُ رْ",
+              cara: "Dibaca tebal",
+              contoh: "رَبِّ الْعٰلَمِيْنَ (QS. Al-Fatihah: 2)"
+            },
+            teacherNote: "Ingatkan anak agar tidak memoncongkan bibir berlebihan seperti huruf Wawu, cukup pangkal lidah yang diangkat."
+          },
+          {
+            id: "8-2",
+            name: "2. Ra Tarqiq (Ra Tipis)",
+            arabicTitle: "رَاءٌ تَرْقِيْقٌ",
+            pronunciation: "Dibaca: Ro Tar-qiq",
+            definition: "Ra Tarqiq adalah membaca huruf Ra (ر) dengan tipis. Terjadi apabila Ra berharakat Kasrah (رِ / رٍ) atau Ra Sukun didahului Kasrah asli dan tidak bertemu huruf Isti'la.",
+            signs: "Huruf Ra berharakat Kasrah (رِ) atau Kasratain (رٍ), atau Ra Sukun setelah Kasrah asli.",
+            letters: ["رِ", "رٍ", "ـِ رْ"],
+            formula: "Kunci Ingat: 'RA KASRAH (رِ) = DIBACA TIPIS (RI)'",
+            howToRead: "Turunkan pangkal lidah dan tarik bibir sedikit tersenyum agar bunyi Ra terdengar tipis.",
+            analogy: {
+              title: "Analogi Suara Seruling Tipis 🎶",
+              text: "Saat huruf Ra memakai harakat bawah (Kasrah), suaranya ringan dan tipis seperti tiupan seruling."
+            },
+            examples: [
+              { ar: "مِ<span class='text-sky-700 bg-sky-100 px-1 rounded'>نْ شَرِّ</span> مَا خَلَقَۙ", surah: "QS. Al-Falaq: 2", reason: "Huruf Ra berharakat Kasrah (رِّ).", how: "Dibaca tipis 'min syarri'." },
+              { ar: "لَيْلَةُ الْقَ<span class='text-sky-700 bg-sky-100 px-1 rounded'>دْرِ</span> ەۙ خَيْرٌ مِّنْ اَلْفِ شَهْ<span class='text-sky-700 bg-sky-100 px-1 rounded'>رٍۗ</span>", surah: "QS. Al-Qadr: 3", reason: "Huruf Ra berharakat Kasrah (رِ) dan Kasratain (رٍ).", how: "Dibaca tipis 'al-qadri' dan 'syahr'." },
+              { ar: "فَ<span class='text-sky-700 bg-sky-100 px-1 rounded'>اصْبِرْ</span> صَبْرًا جَمِيْلًا", surah: "QS. Al-Ma'arij: 5", reason: "Ra sukun (رْ) didahului huruf berharakat Kasrah (بِ).", how: "Dibaca tipis 'faṣbir'." }
+            ],
+            comparison: {
+              title: "Ra Tarqiq vs Ra Tafkhim",
+              colA: "Ra Tarqiq (Tipis)",
+              colB: "Ra Tafkhim (Tebal)",
+              rows: [
+                ["Ra berharakat KASRAH (رِ)", "Ra berharakat FATHAH / DHOMMAH (رَ / رُ)"],
+                ["Contoh: مِنْ شَرِّ", "Contoh: نَصْرُ اللّٰهِ"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca 'min syarro' dengan tebal.", right: "Membaca 'min syarri' dengan tipis." }
+            ],
+            summary: {
+              hukum: "Hukum Ro' Tarqiq",
+              ciri: "Ra Kasrah (رِ) atau Ra Sukun setelah Kasrah asli",
+              huruf: "رِ، رٍ، ـِ رْ",
+              cara: "Dibaca tipis",
+              contoh: "مِنْ شَرِّ مَا خَلَقَ (QS. Al-Falaq: 2)"
+            },
+            teacherNote: "Latih anak membaca kata 'لَيْلَةِ الْقَدْرِ' dengan memperhatikan perbedaan ketebalan antara Qaf (tebal) dan Ra kasrah (tipis)."
+          }
+        ]
+      },
+      {
+        bab: 9,
+        title: "BAB 9 — QOLQOLAH",
+        icon: "🏀",
+        islandName: "Lapangan Pantul 5 Huruf Qolqolah",
+        subchapters: [
+          {
+            id: "9-1",
+            name: "1. Qolqolah Shugro",
+            arabicTitle: "قَلْقَلَةٌ صُغْرٰى",
+            pronunciation: "Dibaca: Qol-qo-lah Shugh-ro",
+            definition: "Qolqolah artinya memantul. Qolqolah Shugro (kecil) terjadi apabila salah satu dari 5 huruf Qolqolah (ق ط ب ج د) berharakat SUKUN ASLI di tengah kata atau tengah bacaan.",
+            signs: "Huruf ق، ط، ب، ج، atau د memakai tanda sukun asli (قْ، طْ، بْ، جْ، دْ) di tengah bacaan.",
+            letters: ["ق", "ط", "ب", "ج", "د"],
+            formula: "Kunci Ingat: 'BAJU DI TOKO (ب ج د ط ق) SUKUN DI TENGAH = PANTULAN KECIL'",
+            howToRead: "Pantulkan suara secara ringan dan cepat tanpa berhenti, langsung menyambung ke huruf berikutnya.",
+            analogy: {
+              title: "Analogi Bola Dribbling Pelan 🏀",
+              text: "Seperti pemain basket memantulkan bola pelan sambil terus berlari! Pantulannya ringan dan langsung jalan."
+            },
+            examples: [
+              { ar: "اِ<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>قْ</span>رَأْ بِاسْمِ رَبِّكَ الَّذِيْ خَلَقَۚ", surah: "QS. Al-'Alaq: 1", reason: "Qaf sukun asli (قْ) di tengah kata.", how: "Pantulkan ringan 'iq-ra'' lalu langsung lanjut." },
+              { ar: "اِ<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>طْ</span>عَمَهُمْ مِّنْ جُوْعٍ", surah: "QS. Quraisy: 4", reason: "Tha sukun asli (طْ) di tengah kata.", how: "Pantulkan ringan 'aṭ-'amahum'." },
+              { ar: "لَمْ يَلِ<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>دْ</span> وَلَمْ يُوْلَ<span class='text-emerald-700 bg-emerald-100 px-1 rounded'>دْ</span>ۙ", surah: "QS. Al-Ikhlas: 3", reason: "Dal sukun asli (دْ) di tengah ayat (jika dibaca washal/lanjut).", how: "Pantulkan ringan 'lam yalid wa lam yūlad'." }
+            ],
+            comparison: {
+              title: "Qolqolah Shugro vs Qolqolah Kubro",
+              colA: "Qolqolah Shugro (Kecil)",
+              colB: "Qolqolah Kubro (Besar)",
+              rows: [
+                ["Sukun ASLI di tengah kata/bacaan", "Sukun karena WAQOF (berhenti) di akhir ayat"],
+                ["Pantulan ringan dan cepat", "Pantulan lebih kuat dan mantap"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Menambah vokal 'e' berlebihan (misal: 'iqe-ra').", right: "Memantulkan makhraj huruf secara murni dan ringan." }
+            ],
+            summary: {
+              hukum: "Qolqolah Shugro",
+              ciri: "Huruf ق ط ب ج د bersukun asli di tengah bacaan",
+              huruf: "ق، ط، ب، ج، د",
+              cara: "Dipantulkan ringan",
+              contoh: "اِقْرَأْ بِاسْمِ رَبِّكَ (QS. Al-'Alaq: 1)"
+            },
+            teacherNote: "Singkatan 'BAJU DI TOKO' (ب ج د ط ق) sangat efektif membantu anak mengingat kelima huruf Qolqolah."
+          },
+          {
+            id: "9-2",
+            name: "2. Qolqolah Kubro",
+            arabicTitle: "قَلْقَلَةٌ كُبْرٰى",
+            pronunciation: "Dibaca: Qol-qo-lah Kub-ro",
+            definition: "Qolqolah Kubro (besar) terjadi apabila salah satu dari 5 huruf Qolqolah (ق ط ب ج د) berada di akhir ayat atau tempat berhenti (waqof) sehingga dibaca sukun.",
+            signs: "Huruf ق، ط، ب، ج، atau د berada di ujung ayat / tanda waqof.",
+            letters: ["ق", "ط", "ب", "ج", "د"],
+            formula: "Kunci Ingat: 'BAJU DI TOKO (ب ج د ط ق) DI AKHIR AYAT = PANTULAN BESAR'",
+            howToRead: "Hentikan bacaan pada huruf Qolqolah dengan pantulan suara yang lebih kuat dan jelas.",
+            analogy: {
+              title: "Analogi Lemparan Bola ke Ring Basket 🎯",
+              text: "Saat bola mengenai papan ring di akhir lemparan, pantulannya mantap dan jelas terdengar!"
+            },
+            examples: [
+              { ar: "قُلْ هُوَ اللّٰهُ اَحَ<span class='text-rose-700 bg-rose-100 px-1 rounded'>دٌۚ</span>", surah: "QS. Al-Ikhlas: 1", reason: "Huruf Dal (د) disukunkan karena berhenti di akhir ayat.", how: "Pantulkan mantap 'aḥad!'." },
+              { ar: "قُلْ اَعُوْذُ بِرَبِّ الْفَلَ<span class='text-rose-700 bg-rose-100 px-1 rounded'>قِۙ</span>", surah: "QS. Al-Falaq: 1", reason: "Huruf Qaf (ق) disukunkan di akhir ayat.", how: "Pantulkan mantap 'al-falaq!'." },
+              { ar: "تَبَّتْ يَدَآ اَبِيْ لَهَبٍ وَّتَ<span class='text-rose-700 bg-rose-100 px-1 rounded'>بَّۗ</span>", surah: "QS. Al-Lahab: 1", reason: "Huruf Ba bertasydid (بَّ) di akhir ayat.", how: "Tahan sejenak lalu pantulkan kuat 'wa tabb!'." }
+            ],
+            comparison: {
+              title: "Qolqolah Kubro vs Qolqolah Shugro",
+              colA: "Qolqolah Kubro (Besar)",
+              colB: "Qolqolah Shugro (Kecil)",
+              rows: [
+                ["Berada di AKHIR ayat / tempat berhenti (waqof)", "Berada di TENGAH bacaan"],
+                ["Pantulan lebih kuat dan jelas", "Pantulan ringan dan langsung lanjut"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Menahan bunyi huruf tanpa memantulkannya di akhir ayat.", right: "Melepaskan makhraj huruf Qolqolah dengan pantulan yang jelas." }
+            ],
+            summary: {
+              hukum: "Qolqolah Kubro",
+              ciri: "Huruf ق ط ب ج د berhenti (waqof) di akhir ayat",
+              huruf: "ق، ط، ب، ج، د",
+              cara: "Dipantulkan kuat dan jelas",
+              contoh: "قُلْ هُوَ اللّٰهُ اَحَدٌ (QS. Al-Ikhlas: 1)"
+            },
+            teacherNote: "Surat Al-Ikhlas dan Al-Falaq seluruh akhir ayatnya berakhiran Qolqolah Kubro sehingga sangat bagus untuk praktik kelas."
+          }
+        ]
+      },
+      {
+        bab: 10,
+        title: "BAB 10 — HUKUM BACAAN PANJANG (MAD)",
+        icon: "📏",
+        islandName: "Istana 14 Hukum Mad",
+        subchapters: [
+          {
+            id: "10-1",
+            name: "1. Mad Thobi'i",
+            arabicTitle: "مَدٌّ طَبِيْعِيٌّ",
+            pronunciation: "Dibaca: Mad Tho-bi-'i",
+            definition: "Mad Thobi'i adalah bacaan panjang dasar sepanjang 2 harakat (1 alif). Terjadi apabila Fathah diikuti Alif (ـَا), Kasrah diikuti Ya sukun (ـِيْ), atau Dhommah diikuti Wawu sukun (ـُوْ).",
+            signs: "Fathah + Alif (ـَا), Kasrah + Ya sukun (ـِيْ), atau Dhommah + Wawu sukun (ـُوْ) tanpa bertemu Hamzah atau Sukun.",
+            letters: ["ا", "و", "ي"],
+            formula: "Kunci Ingat: 'FATHAH+ALIF, KASRAH+YA, DHOMMAH+WAWU = PANJANG 2 KETUKAN'",
+            howToRead: "Panjangkan suara secara stabil selama 2 ketukan (tidak kurang dan tidak berlebihan).",
+            analogy: {
+              title: "Analogi Penggaris Pendek 2 Jari ✌️",
+              text: "Panjang Mad Thobi'i pas seperti membuka 2 jari tangan (2 ketukan). Semua jenis Mad lain lahir dari Mad Thobi'i ini!"
+            },
+            examples: [
+              { ar: "اِذَا جَاۤءَ نَصْرُ اللّٰهِ <span class='text-teal-700 bg-teal-100 px-1 rounded'>وَا</span>لْفَتْحُۙ", surah: "QS. An-Nashr: 1", reason: "Fathah diikuti Alif pada kata اِذَا.", how: "Panjangkan 'iżā' selama 2 ketukan." },
+              { ar: "لَـكُمْ <span class='text-teal-700 bg-teal-100 px-1 rounded'>دِيْ</span>نُكُمْ وَلِيَ <span class='text-teal-700 bg-teal-100 px-1 rounded'>دِيْ</span>نِ", surah: "QS. Al-Kafirun: 6", reason: "Kasrah diikuti Ya sukun pada دِيْنُكُمْ.", how: "Panjangkan 'dīnukum' selama 2 ketukan." },
+              { ar: "لَآ اَعْبُدُ مَا تَعْبُ<span class='text-teal-700 bg-teal-100 px-1 rounded'>دُوْ</span>نَۙ", surah: "QS. Al-Kafirun: 2", reason: "Dhommah diikuti Wawu sukun pada تَعْبُدُوْنَ.", how: "Panjangkan 'ta'budūna' selama 2 ketukan." }
+            ],
+            comparison: {
+              title: "Mad Thobi'i vs Mad Wajib Muttashil",
+              colA: "Mad Thobi'i",
+              colB: "Mad Wajib Muttashil",
+              rows: [
+                ["Tidak bertemu Hamzah (ء) atau Sukun", "Bertemu Hamzah (ء) dalam SATU KATA"],
+                ["Panjangnya 2 harakat", "Panjangnya 4–5 harakat"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Memendekkan bacaan panjang 2 harakat menjadi 1 harakat.", right: "Mengayunkan suara dengan stabil sepanjang 2 ketukan." }
+            ],
+            summary: {
+              hukum: "Mad Thobi'i",
+              ciri: "ـَا ، ـِيْ ، ـُوْ tanpa Hamzah/Sukun sesudahnya",
+              huruf: "ا، و، ي",
+              cara: "Dibaca panjang 2 harakat",
+              contoh: "لَكُمْ دِيْنُكُمْ (QS. Al-Kafirun: 6)"
+            },
+            teacherNote: "Gunakan ayunan tangan 2 ketukan dari Metode Wafa agar durasi 2 harakat anak konsisten."
+          },
+          {
+            id: "10-2",
+            name: "2. Mad Wajib Muttashil",
+            arabicTitle: "مَدٌّ وَاجِبٌ مُتَّصِلٌ",
+            pronunciation: "Dibaca: Mad Wa-jib Mut-ta-shil",
+            definition: "Mad Wajib Muttashil terjadi apabila Mad Thobi'i bertemu huruf Hamzah (ء) di dalam SATU KATA. Panjang bacaannya 4 sampai 5 harakat.",
+            signs: "Huruf Mad bertanda garis bendera panjang (ـٓ) yang langsung diikuti Hamzah (ء) dalam satu kata.",
+            letters: ["Mad Thobi'i + ء (dalam 1 kata)"],
+            formula: "Kunci Ingat: 'MAD + HAMZAH SATU KATA = WAJIB PANJANG 4–5 KETUKAN'",
+            howToRead: "Panjangkan suara sepanjang 4 sampai 5 ketukan sebelum mengucapkan huruf Hamzah.",
+            analogy: {
+              title: "Analogi Jembatan Panjang Satu Pulau 🌉",
+              text: "Mad dan Hamzah tinggal di satu pulau (satu kata) yang dihubungkan jembatan panjang sepanjang 4–5 langkah."
+            },
+            examples: [
+              { ar: "اِذَا <span class='text-rose-700 bg-rose-100 px-1 rounded'>جَاۤءَ</span> نَصْرُ اللّٰهِ وَالْفَتْحُۙ", surah: "QS. An-Nashr: 1", reason: "Mad Thobi'i bertemu Hamzah (ء) dalam satu kata جَاۤءَ.", how: "Panjangkan 'jā'a' 4–5 ketukan." },
+              { ar: "وَ<span class='text-rose-700 bg-rose-100 px-1 rounded'>السَّمَاۤءِ</span> وَالطَّارِقِۙ", surah: "QS. Ath-Thariq: 1", reason: "Mad Thobi'i bertemu Hamzah (ء) dalam satu kata السَّمَاۤءِ.", how: "Panjangkan 'was-samā'i' 4–5 ketukan." },
+              { ar: "اِذَا <span class='text-rose-700 bg-rose-100 px-1 rounded'>السَّمَاۤءُ</span> انْشَقَّتْۙ", surah: "QS. Al-Insyiqaq: 1", reason: "Mad Thobi'i bertemu Hamzah (ء) dalam satu kata.", how: "Panjangkan 'as-samā'u' 4–5 ketukan." }
+            ],
+            comparison: {
+              title: "Mad Wajib Muttashil vs Mad Jaiz Munfasil",
+              colA: "Mad Wajib Muttashil",
+              colB: "Mad Jaiz Munfasil",
+              rows: [
+                ["Mad dan Hamzah berada dalam SATU KATA", "Mad dan Hamzah berada di DUA KATA terpisah"],
+                ["Contoh: جَاۤءَ", "Contoh: قُلْ يٰٓاَيُّهَا"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca hanya 2 harakat seperti Mad Thobi'i.", right: "Memanjangkan 4–5 harakat dengan tanda bendera di mushaf." }
+            ],
+            summary: {
+              hukum: "Mad Wajib Muttashil",
+              ciri: "Mad Thobi'i bertemu Hamzah dalam satu kata",
+              huruf: "ا/و/ي + ء (1 kata)",
+              cara: "Dibaca panjang 4–5 harakat",
+              contoh: "اِذَا جَاۤءَ نَصْرُ اللّٰهِ (QS. An-Nashr: 1)"
+            },
+            teacherNote: "Tanda bendera (mad) di mushaf membantu anak mengenali bacaan panjang di atas 2 ketukan."
+          },
+          {
+            id: "10-3",
+            name: "3. Mad Jaiz Munfasil",
+            arabicTitle: "مَدٌّ جَائِزٌ مُنْفَصِلٌ",
+            pronunciation: "Dibaca: Mad Ja-iz Mun-fa-shil",
+            definition: "Mad Jaiz Munfasil terjadi apabila Mad Thobi'i di akhir kata bertemu huruf Hamzah (ء / ا) di awal kata berikutnya. Panjang bacaannya 4–5 harakat (atau 2 harakat menurut sebagian riwayat).",
+            signs: "Huruf Mad bertanda bendera di akhir kata, diikuti Alif berhamzah (اَ / اِ / اُ) di kata berikutnya.",
+            letters: ["Mad Thobi'i (akhir kata) + ء (awal kata berikutnya)"],
+            formula: "Kunci Ingat: 'MAD + HAMZAH BEDA KATA (TERPISAH) = PANJANG 4–5 KETUKAN'",
+            howToRead: "Panjangkan suara 4–5 ketukan saat menyambung dua kata tersebut.",
+            analogy: {
+              title: "Analogi Jembatan Antar Dua Pulau 🏝️🌉🏝️",
+              text: "Munfasil artinya terpisah! Mad berada di ujung pulau pertama, dan Hamzah berdiri di awal pulau kedua."
+            },
+            examples: [
+              { ar: "<span class='text-amber-700 bg-amber-100 px-1 rounded'>اِنَّآ اَ</span>عْطَيْنٰكَ الْكَوْثَرَۗ", surah: "QS. Al-Kautsar: 1", reason: "Mad pada kata اِنَّآ bertemu Hamzah pada اَعْطَيْنٰكَ.", how: "Panjangkan 'innā' 4–5 ketukan." },
+              { ar: "قُلْ <span class='text-amber-700 bg-amber-100 px-1 rounded'>يٰٓاَ</span>يُّهَا الْكٰفِرُوْنَۙ", surah: "QS. Al-Kafirun: 1", reason: "Mad pada يٰٓ bertemu Hamzah pada اَيُّهَا.", how: "Panjangkan 'yā ayyuhal-kāfirūn' 4–5 ketukan." },
+              { ar: "<span class='text-amber-700 bg-amber-100 px-1 rounded'>لَآ اَ</span>عْبُدُ مَا تَعْبُدُوْنَۙ", surah: "QS. Al-Kafirun: 2", reason: "Mad pada لَآ bertemu Hamzah pada اَعْبُدُ.", how: "Panjangkan 'lā a'budu' 4–5 ketukan." }
+            ],
+            comparison: {
+              title: "Mad Jaiz Munfasil vs Mad Wajib Muttashil",
+              colA: "Mad Jaiz Munfasil (Terpisah)",
+              colB: "Mad Wajib Muttashil (Bersambung)",
+              rows: [
+                ["Terjadi pada DUA KATA terpisah", "Terjadi dalam SATU KATA"],
+                ["Contoh: اِنَّآ اَعْطَيْنٰكَ", "Contoh: جَاۤءَ"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Terputus napas di tengah-tengah antara 'innā' dan 'a'ṭaināka'.", right: "Menyambung napas secara halus sepanjang 4–5 ketukan." }
+            ],
+            summary: {
+              hukum: "Mad Jaiz Munfasil",
+              ciri: "Mad Thobi'i bertemu Hamzah di lain kata",
+              huruf: "ا/و/ي + ء (2 kata)",
+              cara: "Dibaca panjang 4–5 harakat",
+              contoh: "اِنَّآ اَعْطَيْنٰكَ الْكَوْثَرَ (QS. Al-Kautsar: 1)"
+            },
+            teacherNote: "Surat Al-Kafirun dan Al-Kautsar kaya akan contoh Mad Jaiz Munfasil yang sudah hafal oleh anak."
+          },
+          {
+            id: "10-4",
+            name: "4. Mad 'Arid Lissukun",
+            arabicTitle: "مَدٌّ عَارِضٌ لِلسُّكُوْنِ",
+            pronunciation: "Dibaca: Mad 'A-ridh Lis-su-kun",
+            definition: "Mad 'Arid Lissukun terjadi apabila Mad Thobi'i bertemu huruf hidup yang disukunkan karena berhenti (waqof) di akhir ayat. Panjangnya boleh 2, 4, atau 6 harakat.",
+            signs: "Huruf Mad (ـَا / ـِيْ / ـُوْ) terletak tepat satu huruf sebelum akhir ayat / tanda waqof.",
+            letters: ["Mad Thobi'i + Huruf Waqof"],
+            formula: "Kunci Ingat: 'MAD THOBI'I + BERHENTI DI AKHIR AYAT = PANJANG 2 / 4 / 6 KETUKAN'",
+            howToRead: "Panjangkan suara (umumnya 4 ketukan agar seragam) lalu tutup dengan huruf terakhir yang disukunkan.",
+            analogy: {
+              title: "Analogi Pengereman Mobil di Garis Finish 🏁",
+              text: "Saat mobil mendekati garis berhenti (akhir ayat), pengemudi memanjangkan rem dengan lembut sebelum berhenti tepat di huruf terakhir."
+            },
+            examples: [
+              { ar: "اَلْحَمْدُ لِلّٰهِ رَبِّ الْعٰلَ<span class='text-purple-700 bg-purple-100 px-1 rounded'>مِيْنَۙ</span>", surah: "QS. Al-Fatihah: 2", reason: "Mad Thobi'i (مِيْ) bertemu huruf Nun yang disukunkan karena waqof.", how: "Panjangkan 'al-'ālamīn' 2, 4, atau 6 ketukan." },
+              { ar: "مٰلِكِ يَوْمِ <span class='text-purple-700 bg-purple-100 px-1 rounded'>الدِّيْنِۗ</span>", surah: "QS. Al-Fatihah: 4", reason: "Mad Thobi'i (دِيْ) sebelum huruf akhir yang diwaqofkan.", how: "Panjangkan 'ad-dīn' 2, 4, atau 6 ketukan." },
+              { ar: "قُلْ اَعُوْذُ بِرَبِّ <span class='text-purple-700 bg-purple-100 px-1 rounded'>النَّاسِۙ</span>", surah: "QS. An-Naas: 1", reason: "Mad Thobi'i (نَّا) sebelum huruf Sin yang diwaqofkan.", how: "Panjangkan 'an-nās' 2, 4, atau 6 ketukan." }
+            ],
+            comparison: {
+              title: "Mad 'Arid Lissukun vs Mad Lin",
+              colA: "Mad 'Arid Lissukun",
+              colB: "Mad Lin",
+              rows: [
+                ["Huruf sebelum Ya/Wawu sukun berharakat sesuai (Kasrah/Dhommah/Fathah+Alif)", "Huruf sebelum Ya/Wawu sukun berharakat FATHAH (ـَيْ / ـَوْ)"],
+                ["Contoh: الْعٰلَمِيْنَ", "Contoh: قُرَيْشٍ / خَوْفٍ"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Tidak konsisten memilih panjang antar ayat dalam satu bacaan.", right: "Memilih panjang 4 ketukan secara konsisten di setiap akhir ayat." }
+            ],
+            summary: {
+              hukum: "Mad 'Arid Lissukun",
+              ciri: "Mad Thobi'i sebelum huruf yang diwaqofkan",
+              huruf: "ا/و/ي + huruf berhenti",
+              cara: "Dibaca panjang 2, 4, atau 6 harakat",
+              contoh: "رَبِّ الْعٰلَمِيْنَ (QS. Al-Fatihah: 2)"
+            },
+            teacherNote: "Latih anak memilih 4 harakat sebagai standar bacaan bersama di kelas."
+          },
+          {
+            id: "10-5",
+            name: "5. Mad 'Iwad",
+            arabicTitle: "مَدٌّ عِوَضٌ",
+            pronunciation: "Dibaca: Mad 'I-wadh",
+            definition: "Mad 'Iwad adalah bacaan panjang 2 harakat sebagai pengganti harakat Fathatain (ـً) ketika berhenti (waqof) di akhir ayat, selain huruf Ta Marbuthah (ة).",
+            signs: "Huruf berharakat Fathatain (ـًا) di akhir ayat / tempat berhenti.",
+            letters: ["Fathatain (ـًا) saat Waqof"],
+            formula: "Kunci Ingat: 'FATHATAIN (ـًا) + BERHENTI = DIBACA PANJANG 2 KETUKAN (TANPA N)'",
+            howToRead: "Hilangkan bunyi 'N' pada tanwin dan ganti dengan suara 'A' panjang selama 2 ketukan.",
+            analogy: {
+              title: "Analogi Tukar Tiket 🎟️",
+              text: "Saat berhenti di akhir ayat, bunyi tanwin 'AN' ditukar menjadi suara panjang 'AA' selama 2 ketukan."
+            },
+            examples: [
+              { ar: "وَالْعٰدِيٰتِ <span class='text-emerald-700 bg-emerald-100 px-1 rounded'>ضَبْحًاۙ</span>", surah: "QS. Al-'Adiyat: 1", reason: "Fathatain pada huruf Ha (حًا) di akhir ayat.", how: "Dibaca 'ḍabḥā' panjang 2 ketukan (bukan ḍabḥan)." },
+              { ar: "فَالْمُوْرِيٰتِ <span class='text-emerald-700 bg-emerald-100 px-1 rounded'>قَدْحًاۙ</span>", surah: "QS. Al-'Adiyat: 2", reason: "Fathatain pada huruf Ha (حًا) di akhir ayat.", how: "Dibaca 'qadḥā' panjang 2 ketukan." },
+              { ar: "فِيْ دِيْنِ اللّٰهِ <span class='text-emerald-700 bg-emerald-100 px-1 rounded'>اَفْوَاجًاۙ</span>", surah: "QS. An-Nashr: 2", reason: "Fathatain pada huruf Jim (جًا) di akhir ayat.", how: "Dibaca 'afwājā' panjang 2 ketukan." }
+            ],
+            comparison: {
+              title: "Mad 'Iwad vs Ta Marbuthah Berfathatain",
+              colA: "Huruf Biasa Berfathatain (جًا)",
+              colB: "Ta Marbuthah Berfathatain (ةً)",
+              rows: [
+                ["Dibaca Mad 'Iwad panjang 2 harakat (afwājā)", "Berubah menjadi Ha sukun (حَامِيَةْ) — BUKAN Mad 'Iwad"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Tetap membunyikan 'afwājan' saat berhenti di akhir ayat.", right: "Menggantinya menjadi 'afwājā' panjang 2 ketukan." }
+            ],
+            summary: {
+              hukum: "Mad 'Iwad",
+              ciri: "Fathatain (ـًا) di akhir ayat / waqof (selain ة)",
+              huruf: "Fathatain (ـًا)",
+              cara: "Dibaca panjang 2 harakat tanpa bunyi N",
+              contoh: "اَفْوَاجًا -> اَفْوَاجَا (QS. An-Nashr: 2)"
+            },
+            teacherNote: "Ingatkan pengecualian penting: jika hurufnya Ta Marbuthah (ةً), saat berhenti menjadi Ha sukun (هْ)."
+          },
+          {
+            id: "10-6",
+            name: "6. Mad Shilah",
+            arabicTitle: "مَدٌّ صِلَةٌ",
+            pronunciation: "Dibaca: Mad Shi-lah",
+            definition: "Mad Shilah adalah bacaan panjang pada Ha Dhomir (هٗ / هٖ — kata ganti dia) yang diapit dua huruf berharakat. Dibagi dua: Mad Shilah Qashirah (2 harakat) dan Mad Shilah Thawilah (4–5 harakat jika bertemu Hamzah).",
+            signs: "Huruf Ha kata ganti dengan tanda wawu kecil (هٗ) atau ya kecil terbalik (هٖ) di antara dua huruf hidup.",
+            letters: ["هٗ", "هٖ"],
+            formula: "Kunci Ingat: 'HA DHOMIR (هٗ / هٖ) DI APIT HURUF HIDUP = 2 KETUKAN (5 KETUKAN JIKA BERTEMU ء)'",
+            howToRead: "Panjangkan bunyi 'hū' atau 'hī' selama 2 ketukan (atau 4–5 ketukan bila setelahnya Hamzah).",
+            analogy: {
+              title: "Analogi Tanda Sambung Kecil 🔗",
+              text: "Di mushaf ada tanda wawu kecil atau ya kecil di samping huruf Ha sebagai pengingat untuk memanjangkan sambungannya."
+            },
+            examples: [
+              { ar: "مَآ اَغْنٰى عَنْهُ <span class='text-sky-700 bg-sky-100 px-1 rounded'>مَالُهٗ</span> وَمَا كَسَبَۗ", surah: "QS. Al-Lahab: 2", reason: "Ha Dhomir (هٗ) diapit huruf hidup dan tidak bertemu Hamzah (Mad Shilah Qashirah).", how: "Dibaca panjang 'māluhū' 2 ketukan." },
+              { ar: "وَاُمِّهٖ وَاَبِيْهِۙ", surah: "QS. 'Abasa: 35", reason: "Ha Dhomir (هٖ) diapit huruf hidup (Mad Shilah Qashirah).", how: "Dibaca panjang 'wa ummihī' 2 ketukan." },
+              { ar: "يَحْسَبُ اَنَّ <span class='text-sky-700 bg-sky-100 px-1 rounded'>مَالَهٗٓ اَ</span>خْلَدَهٗۚ", surah: "QS. Al-Humazah: 3", reason: "Ha Dhomir (هٗٓ) bertemu huruf Hamzah (Mad Shilah Thawilah).", how: "Dibaca panjang 'mālahū akhladah' 4–5 ketukan." }
+            ],
+            comparison: {
+              title: "Mad Shilah Qashirah vs Mad Shilah Thawilah",
+              colA: "Mad Shilah Qashirah",
+              colB: "Mad Shilah Thawilah",
+              rows: [
+                ["Setelah Ha Dhomir BUKAN huruf Hamzah", "Setelah Ha Dhomir ada huruf HAMZAH (ء)"],
+                ["Panjangnya 2 harakat (مَالُهٗ)", "Panjangnya 4–5 harakat (مَالَهٗٓ اَخْلَدَهٗ)"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Memanjangkan Ha pada kata 'عَنْهُ' (QS. Al-Lahab: 2).", right: "Tidak memanjangkan 'عَنْهُ' karena sebelum Ha adalah huruf sukun (نْ)." }
+            ],
+            summary: {
+              hukum: "Mad Shilah",
+              ciri: "Ha Dhomir (هٗ / هٖ) di antara dua huruf berharakat",
+              huruf: "هٗ dan هٖ",
+              cara: "2 harakat (Qashirah) atau 4–5 harakat jika bertemu ء (Thawilah)",
+              contoh: "مَالُهٗ وَمَا كَسَبَ (QS. Al-Lahab: 2)"
+            },
+            teacherNote: "Perlihatkan perbedaan visual antara عَنْهُ (tanpa wawu kecil, dibaca pendek) dan مَالُهٗ (ada wawu kecil, dibaca panjang) dalam satu ayat QS. Al-Lahab: 2."
+          },
+          {
+            id: "10-7",
+            name: "7. Mad Badal",
+            arabicTitle: "مَدٌّ بَدَلٌ",
+            pronunciation: "Dibaca: Mad Ba-dal",
+            definition: "Mad Badal adalah bacaan panjang 2 harakat pada huruf Hamzah yang dipanjangkan (اٰ / اِيْ / اُوْ), yang asalnya merupakan pengganti dari dua huruf Hamzah.",
+            signs: "Hamzah berharakat fathah berdiri (اٰ), kasrah + ya sukun (اِيْ), atau dhommah + wawu sukun (اُوْ).",
+            letters: ["اٰ", "اِيْ", "اُوْ"],
+            formula: "Kunci Ingat: 'HAMZAH PANJANG (اٰ / اِيْ / اُوْ) = PANJANG 2 KETUKAN'",
+            howToRead: "Panjangkan bunyi huruf Hamzah selama 2 ketukan seperti Mad Thobi'i.",
+            analogy: {
+              title: "Analogi Pemain Pengganti ⚽",
+              text: "Badal artinya pengganti! Hamzah kedua diganti menjadi huruf mad agar lebih ringan dan merdu diucapkan."
+            },
+            examples: [
+              { ar: "اِلَّا الَّذِيْنَ <span class='text-amber-700 bg-amber-100 px-1 rounded'>اٰمَ</span>نُوْا وَعَمِلُوا الصّٰلِحٰتِ", surah: "QS. Al-'Ashr: 3", reason: "Hamzah dipanjangkan pada kata اٰمَنُوْا.", how: "Panjangkan 'āmanū' 2 ketukan." },
+              { ar: "وَّ<span class='text-amber-700 bg-amber-100 px-1 rounded'>اٰمَ</span>نَهُمْ مِّنْ خَوْفٍ", surah: "QS. Quraisy: 4", reason: "Hamzah dipanjangkan pada kata اٰمَنَهُمْ.", how: "Panjangkan 'āmanahum' 2 ketukan." },
+              { ar: "وَمَا تَفَرَّقَ الَّذِيْنَ <span class='text-amber-700 bg-amber-100 px-1 rounded'>اُوْ</span>تُوا الْكِتٰبَ", surah: "QS. Al-Bayyinah: 4", reason: "Hamzah dhommah diikuti Wawu sukun pada اُوْتُوا.", how: "Panjangkan 'ūtul-kitāba' 2 ketukan." }
+            ],
+            comparison: {
+              title: "Mad Badal vs Mad Thobi'i",
+              colA: "Mad Badal",
+              colB: "Mad Thobi'i",
+              rows: [
+                ["Huruf yang dipanjangkan adalah HAMZAH (اٰ / اِيْ / اُوْ)", "Huruf yang dipanjangkan selain Hamzah (بَا / مِيْ / نُوْ)"],
+                ["Sama-sama dibaca 2 harakat", "Sama-sama dibaca 2 harakat"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca pendek 'amanu'.", right: "Membaca panjang 2 ketukan 'āmanū'." }
+            ],
+            summary: {
+              hukum: "Mad Badal",
+              ciri: "Huruf Hamzah yang dibaca panjang (اٰ / اِيْ / اُوْ)",
+              huruf: "اٰ، اِيْ، اُوْ",
+              cara: "Dibaca panjang 2 harakat",
+              contoh: "اٰمَنُوْا (QS. Al-'Ashr: 3)"
+            },
+            teacherNote: "Fokuskan pengenalan visual fathah berdiri di atas Alif (اٰ) pada mushaf."
+          },
+          {
+            id: "10-8",
+            name: "8. Mad Tamkin",
+            arabicTitle: "مَدٌّ تَمْكِيْنٌ",
+            pronunciation: "Dibaca: Mad Tam-kin",
+            definition: "Mad Tamkin adalah bacaan panjang 2 harakat ketika dua huruf Ya bertemu: huruf Ya pertama bertasydid dan berharakat Kasrah (يِّ), diikuti huruf Ya sukun (يْ).",
+            signs: "Huruf Ya bertasydid kasrah bertemu Ya sukun (يِّيْ).",
+            letters: ["يِّيْ"],
+            formula: "Kunci Ingat: 'YA TASYDID KASRAH + YA SUKUN (يِّيْ) = TEKAN & PANJANG 2 KETUKAN'",
+            howToRead: "Tekan terlebih dahulu tasydid pada Ya pertama, lalu panjangkan Ya sukun selama 2 ketukan.",
+            analogy: {
+              title: "Analogi Dua Anak Tangga 🪜",
+              text: "Langkah pertama menginjak tasydid dengan mantap, langkah kedua meluncur panjang 2 ketukan."
+            },
+            examples: [
+              { ar: "وَاِذَا <span class='text-teal-700 bg-teal-100 px-1 rounded'>حُيِّيْتُمْ</span> بِتَحِيَّةٍ فَحَيُّوْا بِاَحْسَنَ مِنْهَا", surah: "QS. An-Nisa': 86", reason: "Ya bertasydid kasrah bertemu Ya sukun pada حُيِّيْتُمْ.", how: "Tekan tasydid lalu panjangkan 'ḥuyyītum' 2 ketukan." },
+              { ar: "اَلَّذِيْ يُوَسْوِسُ <span class='text-teal-700 bg-teal-100 px-1 rounded'>فِيْ صُدُوْرِ</span> (Contoh pembanding) / <span class='text-teal-700 bg-teal-100 px-1 rounded'>النَّبِيّٖنَ</span>", surah: "QS. Al-Baqarah: 61", reason: "Ya bertasydid kasrah bertemu Ya sukun pada النَّبِيّٖنَ.", how: "Tekan tasydid lalu panjangkan 'an-nabiyyīna' 2 ketukan." },
+              { ar: "وَلٰكِنْ كُوْنُوْا <span class='text-teal-700 bg-teal-100 px-1 rounded'>رَبّٰنِيّٖنَ</span>", surah: "QS. Ali 'Imran: 79", reason: "Ya bertasydid kasrah bertemu Ya sukun pada رَبّٰنِيّٖنَ.", how: "Tekan tasydid lalu panjangkan 'rabbāniyyīna' 2 ketukan." }
+            ],
+            comparison: {
+              title: "Mad Tamkin vs Mad Thobi'i Biasa",
+              colA: "Mad Tamkin",
+              colB: "Mad Thobi'i Biasa",
+              rows: [
+                ["Pertemuan DUA huruf Ya (يِّيْ)", "Satu huruf Mad saja (فِيْ)"],
+                ["Perlu menekankan tasydid sebelum memanjangkan", "Langsung dipanjangkan 2 harakat"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Menghilangkan tekanan tasydid pada kata 'an-nabiyyīna'.", right: "Menekan tasydid terlebih dahulu lalu memanjangkan 2 ketukan." }
+            ],
+            summary: {
+              hukum: "Mad Tamkin",
+              ciri: "Ya bertasydid kasrah bertemu Ya sukun (يِّيْ)",
+              huruf: "يِّيْ",
+              cara: "Ditekan tasydidnya lalu dipanjangkan 2 harakat",
+              contoh: "حُيِّيْتُمْ، النَّبِيّٖنَ"
+            },
+            teacherNote: "Bimbing anak merasakan perbedaan pelafalan dua Ya agar tidak terdengar seperti satu Ya."
+          },
+          {
+            id: "10-9",
+            name: "9. Mad Lin",
+            arabicTitle: "مَدٌّ لِيْنٌ",
+            pronunciation: "Dibaca: Mad Lin",
+            definition: "Mad Lin (lunak/lembut) terjadi apabila huruf Wawu sukun (وْ) atau Ya sukun (يْ) didahului harakat Fathah (ـَ), lalu berhenti (waqof) pada huruf sesudahnya. Panjangnya 2, 4, atau 6 harakat.",
+            signs: "Fathah + Wawu sukun (ـَوْ) atau Fathah + Ya sukun (ـَيْ) sebelum huruf akhir yang diwaqofkan.",
+            letters: ["ـَوْ", "ـَيْ"],
+            formula: "Kunci Ingat: 'FATHAH + WAWU/YA SUKUN (ـَوْ / ـَيْ) + BERHENTI = LUNAK 2 / 4 / 6 KETUKAN'",
+            howToRead: "Ucapkan bunyi 'au' atau 'ai' secara lembut dan lunak, panjangkan 2, 4, atau 6 ketukan sebelum berhenti.",
+            analogy: {
+              title: "Analogi Bantal Empuk & Lembut ☁️",
+              text: "Lin artinya lembut! Bunyi 'Quraiiiisy' dan 'Khauuuuf' diluncurkan dengan lembut seperti mendarat di atas bantal empuk."
+            },
+            examples: [
+              { ar: "لِاِيْلٰفِ <span class='text-sky-700 bg-sky-100 px-1 rounded'>قُرَيْشٍۙ</span>", surah: "QS. Quraisy: 1", reason: "Ya sukun didahului Fathah (رَيْ) lalu waqof di akhir ayat.", how: "Lunakkan dan panjangkan 'quraisy' 2, 4, atau 6 ketukan." },
+              { ar: "اٖلٰفِهِمْ رِحْلَةَ الشِّتَاۤءِ <span class='text-sky-700 bg-sky-100 px-1 rounded'>وَالصَّيْفِۚ</span>", surah: "QS. Quraisy: 2", reason: "Ya sukun didahului Fathah (صَيْ) di akhir ayat.", how: "Lunakkan dan panjangkan 'waṣ-ṣaif'." },
+              { ar: "وَّاٰمَنَهُمْ مِّنْ <span class='text-sky-700 bg-sky-100 px-1 rounded'>خَوْفٍ</span>", surah: "QS. Quraisy: 4", reason: "Wawu sukun didahului Fathah (خَوْ) di akhir ayat.", how: "Lunakkan dan panjangkan 'min khauf'." }
+            ],
+            comparison: {
+              title: "Mad Lin vs Mad 'Arid Lissukun",
+              colA: "Mad Lin",
+              colB: "Mad 'Arid Lissukun",
+              rows: [
+                ["Harakat sebelum وْ / يْ adalah FATHAH (ـَوْ / ـَيْ)", "Harakat sebelum وْ / يْ adalah Dhommah / Kasrah (ـُوْ / ـِيْ)"],
+                ["Contoh: قُرَيْشٍ، خَوْفٍ", "Contoh: الْعٰلَمِيْنَ، نَسْتَعِيْنُ"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Memanjangkan Mad Lin ketika bacaan tidak berhenti (washal).", right: "Memanjangkan Mad Lin hanya ketika berhenti (waqof) pada kata tersebut." }
+            ],
+            summary: {
+              hukum: "Mad Lin",
+              ciri: "Fathah + وْ atau يْ sebelum huruf yang diwaqofkan",
+              huruf: "ـَوْ dan ـَيْ (saat waqof)",
+              cara: "Dibaca lembut sepanjang 2, 4, atau 6 harakat",
+              contoh: "قُرَيْشٍ، وَالصَّيْفِ، خَوْفٍ (QS. Quraisy)"
+            },
+            teacherNote: "Seluruh akhir ayat Surat Quraisy (1–4) adalah contoh sempurna Mad Lin!"
+          },
+          {
+            id: "10-10",
+            name: "10. Mad Lazim Harfiy Mutsaqqal",
+            arabicTitle: "مَدٌّ لَازِمٌ حَرْفِيٌّ مُثَقَّلٌ",
+            pronunciation: "Dibaca: Mad La-zim Har-fiy Mu-tsaq-qol",
+            definition: "Mad Lazim Harfiy Mutsaqqal terdapat pada huruf-huruf pembuka surah (Fawatihus Suwar) yang ejaannya 3 huruf, huruf tengahnya huruf Mad, dan huruf ketiganya diidghomkan (dilebur/bertasydid) ke huruf sesudahnya. Panjangnya 6 harakat.",
+            signs: "Huruf pembuka surah bertanda bendera panjang yang diidghomkan ke huruf berikutnya (contoh: huruf Lam pada الٓمّٓ).",
+            letters: ["ن ق ص ع س ل ك م (yang diidghomkan)"],
+            formula: "Kunci Ingat: 'HURUF PEMBUKA SURAH + MELEBUR/TASYDID = PANJANG 6 KETUKAN'",
+            howToRead: "Panjangkan bunyi huruf pertama selama 6 ketukan lalu leburkan dengan dengung ke huruf berikutnya.",
+            analogy: {
+              title: "Analogi Kereta Gandeng Berat 🚂",
+              text: "Mutsaqqal artinya diberatkan! Huruf pertama ditarik panjang penuh 6 ketukan lalu digandeng berat ke huruf berikutnya."
+            },
+            examples: [
+              { ar: "<span class='text-rose-700 bg-rose-100 px-1 rounded'>الٓمّٓۚ</span>", surah: "QS. Al-Baqarah: 1", reason: "Huruf Lam (لَامْ) dipanjangkan 6 harakat lalu diidghomkan ke Mim (مّٓ).", how: "Dibaca 'Alif Lāāāāāām-Mīīīīīīm' (Lam 6 ketukan + dengung)." },
+              { ar: "<span class='text-rose-700 bg-rose-100 px-1 rounded'>طٰسٓمّٓ</span>", surah: "QS. Asy-Syu'ara: 1", reason: "Huruf Sin (سِيْنْ) dipanjangkan 6 harakat lalu diidghomkan ke Mim (مّٓ).", how: "Dibaca 'Ṭā Sīīīīīīm-Mīīīīīīm'." },
+              { ar: "<span class='text-rose-700 bg-rose-100 px-1 rounded'>الٓمّٓصٓ</span>", surah: "QS. Al-A'raf: 1", reason: "Huruf Lam diidghomkan ke Mim bertasydid.", how: "Dibaca 'Alif Lāāāāāām-Mīīīīīīm-Ṣāāāāāād'." }
+            ],
+            comparison: {
+              title: "Harfiy Mutsaqqal vs Harfiy Mukhaffaf",
+              colA: "Mad Lazim Harfiy Mutsaqqal",
+              colB: "Mad Lazim Harfiy Mukhaffaf",
+              rows: [
+                ["Hurufnya diidghomkan / bertasydid (لٓمّٓ)", "Hurufnya TIDAK diidghomkan (صٓ / قٓ / نٓ)"],
+                ["Sama-sama panjang 6 harakat", "Sama-sama panjang 6 harakat"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca huruf pembuka surah seperti bacaan kata biasa ('alama').", right: "Membaca sesuai nama huruf hijaiyahnya ('Alif Lāām-Mīīm')." }
+            ],
+            summary: {
+              hukum: "Mad Lazim Harfiy Mutsaqqal",
+              ciri: "Huruf pembuka surah yang panjang 6 harakat dan diidghomkan",
+              huruf: "ن ق ص ع س ل ك م (dalam Fawatihus Suwar bertasydid)",
+              cara: "Dibaca panjang 6 harakat disertai idghom",
+              contoh: "الٓمّٓ (QS. Al-Baqarah: 1)"
+            },
+            teacherNote: "Ajarkan bahwa huruf-huruf di awal surah dibaca nama hurufnya (Alif, Lam, Mim), bukan harakat kata."
+          },
+          {
+            id: "10-11",
+            name: "11. Mad Lazim Harfiy Mukhaffaf",
+            arabicTitle: "مَدٌّ لَازِمٌ حَرْفِيٌّ مُخَفَّفٌ",
+            pronunciation: "Dibaca: Mad La-zim Har-fiy Mu-khof-faf",
+            definition: "Mad Lazim Harfiy Mukhaffaf terdapat pada huruf-huruf pembuka surah yang ejaannya 3 huruf, huruf tengahnya huruf Mad, dan huruf ketiganya sukun tanpa diidghomkan. Panjangnya 6 harakat.",
+            signs: "Huruf pembuka surah bertanda bendera yang berdiri sendiri atau tidak diidghomkan (seperti قٓ، نٓ، صٓ، atau Mim pada الٓمّٓ).",
+            letters: ["ن", "ق", "ص", "ع", "س", "ل", "ك", "م"],
+            formula: "Kunci Ingat: 'HURUF PEMBUKA SURAH TANPA TASYDID = RINGAN & PANJANG 6 KETUKAN'",
+            howToRead: "Panjangkan bunyi huruf selama 6 ketukan secara ringan tanpa melebur ke huruf lain.",
+            analogy: {
+              title: "Analogi Meluncur Ringan 6 Langkah 🛷",
+              text: "Mukhaffaf artinya diringankan! Hurufnya meluncur panjang 6 ketukan tanpa beban tasydid."
+            },
+            examples: [
+              { ar: "<span class='text-teal-700 bg-teal-100 px-1 rounded'>نٓ ۚ</span> وَالْقَلَمِ وَمَا يَسْطُرُوْنَۙ", surah: "QS. Al-Qalam: 1", reason: "Huruf Nun (نُوْنْ) di awal surah tidak diidghomkan.", how: "Dibaca 'Nūūūūūūn' panjang 6 ketukan." },
+              { ar: "<span class='text-teal-700 bg-teal-100 px-1 rounded'>قٓ ۗ</span> وَالْقُرْاٰنِ الْمَجِيْدِۖ", surah: "QS. Qaf: 1", reason: "Huruf Qaf (قَافْ) di awal surah tidak diidghomkan.", how: "Dibaca 'Qāāāāāāf' panjang 6 ketukan." },
+              { ar: "<span class='text-teal-700 bg-teal-100 px-1 rounded'>صٓ ۗ</span> وَالْقُرْاٰنِ ذِى الذِّكْرِۗ", surah: "QS. Shad: 1", reason: "Huruf Shad (صَادْ) di awal surah tidak diidghomkan.", how: "Dibaca 'Ṣāāāāāād' panjang 6 ketukan." }
+            ],
+            comparison: {
+              title: "Harfiy Mukhaffaf vs Kilimiy Mukhaffaf",
+              colA: "Harfiy Mukhaffaf",
+              colB: "Kilimiy Mukhaffaf",
+              rows: [
+                ["Terjadi pada HURUF pembuka surah (نٓ، قٓ، صٓ)", "Terjadi pada KATA penuh (اٰۤلْـٰٔنَ)"],
+                ["Panjang 6 harakat", "Panjang 6 harakat"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Memendekkan huruf قٓ atau نٓ hanya 2 ketukan.", right: "Menghitung penuh 6 ketukan sebelum mengucapkan huruf sukun terakhirnya." }
+            ],
+            summary: {
+              hukum: "Mad Lazim Harfiy Mukhaffaf",
+              ciri: "Huruf pembuka surah 3 ejaan tanpa idghom",
+              huruf: "ن ق ص ع س ل ك م (tanpa idghom)",
+              cara: "Dibaca panjang 6 harakat secara ringan",
+              contoh: "نٓ، قٓ، صٓ"
+            },
+            teacherNote: "Contoh tunggal seperti نٓ dan قٓ sangat mudah dipraktikkan oleh siswa kelas 3 SD."
+          },
+          {
+            id: "10-12",
+            name: "12. Mad Lazim Kilimiy Mutsaqqal",
+            arabicTitle: "مَدٌّ لَازِمٌ كَلِمِيٌّ مُثَقَّلٌ",
+            pronunciation: "Dibaca: Mad La-zim Ki-li-miy Mu-tsaq-qol",
+            definition: "Mad Lazim Kilimiy Mutsaqqal terjadi apabila huruf Mad bertemu huruf yang bertasydid di dalam SATU KATA. Panjang bacaannya wajib 6 harakat.",
+            signs: "Huruf Mad bertanda bendera panjang (ـٓ) langsung bertemu huruf bertasydid ( ّ ) dalam satu kata.",
+            letters: ["Huruf Mad + Huruf Bertasydid (1 kata)"],
+            formula: "Kunci Ingat: 'MAD + HURUF BERTASYDID DALAM SATU KATA = PANJANG 6 KETUKAN'",
+            howToRead: "Panjangkan suara penuh 6 ketukan lalu tekan masuk dengan mantap ke huruf bertasydid.",
+            analogy: {
+              title: "Analogi Tarikan Ketapel Kuat 🎯",
+              text: "Tarik karet ketapel sepanjang 6 hitungan penuh lalu lepaskan tepat ke sasaran huruf bertasydid!"
+            },
+            examples: [
+              { ar: "غَيْرِ الْمَغْضُوْبِ عَلَيْهِمْ وَلَا <span class='text-rose-700 bg-rose-100 px-1 rounded'>الضَّاۤلِّيْنَ</span>", surah: "QS. Al-Fatihah: 7", reason: "Mad pada الضَّاۤ bertemu huruf Lam bertasydid (لِّيْ) dalam satu kata.", how: "Panjangkan 'wa laḍ-ḍāāāāāāllīn' 6 ketukan lalu tekan tasydid Lam." },
+              { ar: "فَاِذَا جَاۤءَتِ <span class='text-rose-700 bg-rose-100 px-1 rounded'>الطَّاۤمَّةُ</span> الْكُبْرٰىۖ", surah: "QS. An-Nazi'at: 34", reason: "Mad bertemu huruf Mim bertasydid (مَّةُ) dalam satu kata.", how: "Panjangkan 'aṭ-ṭāāāāāāmmatu' 6 ketukan + dengung Mim." },
+              { ar: "<span class='text-rose-700 bg-rose-100 px-1 rounded'>اَلْحَاۤقَّةُۙ</span>", surah: "QS. Al-Haqqah: 1", reason: "Mad bertemu huruf Qaf bertasydid (قَّةُ) dalam satu kata.", how: "Panjangkan 'al-ḥāāāāāāqqah' 6 ketukan." }
+            ],
+            comparison: {
+              title: "Kilimiy Mutsaqqal vs Kilimiy Mukhaffaf",
+              colA: "Kilimiy Mutsaqqal",
+              colB: "Kilimiy Mukhaffaf",
+              rows: [
+                ["Setelah Mad ada huruf BERTASYDID (الضَّاۤلِّيْنَ)", "Setelah Mad ada huruf SUKUN tanpa tasydid (اٰۤلْـٰٔنَ)"],
+                ["Diberatkan pada tasydid (6 harakat)", "Diringankan tanpa tasydid (6 harakat)"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Terburu-buru membaca 'walad-dhollin' hanya 2 atau 3 ketukan.", right: "Menghitung penuh 6 ketukan pada akhir Surat Al-Fatihah." }
+            ],
+            summary: {
+              hukum: "Mad Lazim Kilimiy Mutsaqqal",
+              ciri: "Huruf Mad bertemu huruf bertasydid dalam satu kata",
+              huruf: "Mad + Tasydid (1 kata)",
+              cara: "Dibaca panjang 6 harakat lalu ditekan ke tasydid",
+              contoh: "وَلَا الضَّاۤلِّيْنَ (QS. Al-Fatihah: 7)"
+            },
+            teacherNote: "Akhir Surat Al-Fatihah (وَلَا الضَّاۤلِّيْنَ) adalah contoh paling sering dibaca anak dalam shalat."
+          },
+          {
+            id: "10-13",
+            name: "13. Mad Lazim Kilimiy Mukhaffaf",
+            arabicTitle: "مَدٌّ لَازِمٌ كَلِمِيٌّ مُخَفَّفٌ",
+            pronunciation: "Dibaca: Mad La-zim Ki-li-miy Mu-khof-faf",
+            definition: "Mad Lazim Kilimiy Mukhaffaf terjadi apabila huruf Mad bertemu huruf bersukun asli (tidak bertasydid) di dalam satu kata. Panjang bacaannya 6 harakat.",
+            signs: "Huruf Mad bertanda bendera bertemu huruf bersukun (tanpa tasydid) dalam satu kata. Di Al-Qur'an hanya terdapat pada kata اٰۤلْـٰٔنَ (QS. Yunus: 51 & 91).",
+            letters: ["Mad + Huruf Sukun Asli (kata اٰۤلْـٰٔنَ)"],
+            formula: "Kunci Ingat: 'KATA ISTIMEWA اٰۤلْـٰٔنَ (QS. YUNUS) = PANJANG 6 KETUKAN TANPA TASYDID'",
+            howToRead: "Panjangkan Hamzah selama 6 ketukan lalu ucapkan huruf Lam sukun secara jelas tanpa tasydid.",
+            analogy: {
+              title: "Analogi Permata Langka 💎",
+              text: "Kata ini sangat langka di dalam Al-Qur'an, hanya muncul dua kali di Surat Yunus! Cara membacanya panjang 6 ketukan lalu masuk ke Lam sukun dengan ringan."
+            },
+            examples: [
+              { ar: "<span class='text-purple-700 bg-purple-100 px-1 rounded'>اٰۤلْـٰٔنَ</span> وَقَدْ كُنْتُمْ بِهٖ تَسْتَعْجِلُوْنَ", surah: "QS. Yunus: 51", reason: "Mad Badal bertemu huruf Lam sukun (لْ) tanpa tasydid dalam satu kata.", how: "Panjangkan 'āāāāāāl-'āna' 6 ketukan." },
+              { ar: "<span class='text-purple-700 bg-purple-100 px-1 rounded'>اٰۤلْـٰٔنَ</span> وَقَدْ عَصَيْتَ قَبْلُ", surah: "QS. Yunus: 91", reason: "Mad bertemu huruf Lam sukun (لْ) tanpa tasydid dalam satu kata.", how: "Panjangkan 'āāāāāāl-'āna' 6 ketukan." },
+              { ar: "Catatan Guru: Kata <span class='text-purple-700 bg-purple-100 px-1 rounded'>اٰۤلْـٰٔنَ</span> hanya ada di 2 tempat tersebut dalam mushaf.", surah: "Referensi Mushaf", reason: "Satu-satunya kata contoh Mad Lazim Kilimiy Mukhaffaf.", how: "Dibaca panjang 6 harakat." }
+            ],
+            comparison: {
+              title: "Kilimiy Mukhaffaf vs Kilimiy Mutsaqqal",
+              colA: "Kilimiy Mukhaffaf",
+              colB: "Kilimiy Mutsaqqal",
+              rows: [
+                ["Setelah Mad adalah SUKUN tanpa tasydid (اٰۤلْـٰٔنَ)", "Setelah Mad adalah TASYDID (الضَّاۤلِّيْنَ)"],
+                ["Hanya ada 2 tempat di QS. Yunus", "Banyak terdapat di berbagai surah"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Menambahkan tasydid pada huruf Lam sehingga terdengar 'all-ana'.", right: "Membaca Lam sukun secara ringan setelah panjang 6 ketukan ('āāl-'āna')." }
+            ],
+            summary: {
+              hukum: "Mad Lazim Kilimiy Mukhaffaf",
+              ciri: "Huruf Mad bertemu sukun asli tanpa tasydid dalam satu kata",
+              huruf: "Kata اٰۤلْـٰٔنَ",
+              cara: "Dibaca panjang 6 harakat",
+              contoh: "اٰۤلْـٰٔنَ وَقَدْ كُنْتُمْ (QS. Yunus: 51)"
+            },
+            teacherNote: "Sampaikan kepada siswa bahwa contoh ayat ini hanya ada dua di dalam Al-Qur'an (QS. Yunus: 51 dan 91)."
+          },
+          {
+            id: "10-14",
+            name: "14. Mad Farqi",
+            arabicTitle: "مَدٌّ فَرْقِيٌّ",
+            pronunciation: "Dibaca: Mad Far-qi",
+            definition: "Mad Farqi adalah bacaan panjang 6 harakat untuk membedakan antara kalimat tanya (Istifham) dan kalimat berita pada kata yang diawali Alif Lam.",
+            signs: "Hamzah pertanyaan bertanda bendera panjang (ءَاۤ / اٰۤ) bertemu huruf bertasydid pada kata berawalan Alif Lam.",
+            letters: ["اٰۤلذَّكَرَيْنِ", "اٰۤللّٰهُ", "اٰۤلسِّحْرُ"],
+            formula: "Kunci Ingat: 'MAD FARQI = MAD PEMBEDA KALIMAT TANYA (PANJANG 6 KETUKAN)'",
+            howToRead: "Panjangkan suara Hamzah di awal kata selama 6 ketukan untuk menunjukkan makna pertanyaan ('Apakah...?').",
+            analogy: {
+              title: "Analogi Tanda Tanya Besar ❓",
+              text: "Farqi artinya pembeda! Panjang 6 ketukan di awal kata memberi tahu pendengar bahwa kalimat ini adalah kalimat tanya ('Apakah Allah...?' atau 'Apakah dua jantan...?')."
+            },
+            examples: [
+              { ar: "قُلْ <span class='text-amber-700 bg-amber-100 px-1 rounded'>اٰۤللّٰهُ</span> اَذِنَ لَكُمْ اَمْ عَلَى اللّٰهِ تَفْتَرُوْنَ", surah: "QS. Yunus: 59", reason: "Hamzah tanya bertemu Lafdzul Jalalah bertasydid.", how: "Panjangkan 'āāāāāāllōhu' 6 ketukan." },
+              { ar: "قُلْ <span class='text-amber-700 bg-amber-100 px-1 rounded'>اٰۤلذَّكَرَيْنِ</span> حَرَّمَ اَمِ الْاُنْثَيَيْنِ", surah: "QS. Al-An'am: 143", reason: "Hamzah tanya bertemu Alif Lam Syamsiyyah bertasydid.", how: "Panjangkan 'āāāāāāż-żakaraini' 6 ketukan." },
+              { ar: "<span class='text-amber-700 bg-amber-100 px-1 rounded'>اٰۤللّٰهُ</span> خَيْرٌ اَمَّا يُشْرِكُوْنَۗ", surah: "QS. An-Naml: 59", reason: "Hamzah tanya bertemu Lafdzul Jalalah.", how: "Panjangkan 'āāāāāāllōhu' 6 ketukan." }
+            ],
+            comparison: {
+              title: "Mad Farqi vs Mad Badal",
+              colA: "Mad Farqi",
+              colB: "Mad Badal",
+              rows: [
+                ["Berfungsi sebagai kalimat TANYA dan bertemu tasydid", "Bukan kalimat tanya dan tidak bertemu tasydid"],
+                ["Panjangnya 6 harakat (اٰۤللّٰهُ)", "Panjangnya 2 harakat (اٰمَنُوْا)"]
+              ]
+            },
+            mistakes: [
+              { wrong: "Membaca pendek seperti berita biasa ('Allōhu').", right: "Memanjangkan 6 ketukan ('āāāāāāllōhu') sebagai kalimat tanya." }
+            ],
+            summary: {
+              hukum: "Mad Farqi",
+              ciri: "Hamzah tanya dipanjangkan 6 harakat bertemu tasydid",
+              huruf: "اٰۤللّٰهُ، اٰۤلذَّكَرَيْنِ",
+              cara: "Dibaca panjang 6 harakat",
+              contoh: "قُلْ اٰۤللّٰهُ اَذِنَ لَكُمْ (QS. Yunus: 59)"
+            },
+            teacherNote: "Selamat! Ini adalah subbab penutup Bab 10 sekaligus akhir dari seluruh 10 Bab Buku Tajwid Metode Wafa."
+          }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // 2. STATE APLIKASI, PENYIMPANAN PROGRES & AUDIO SYNTHESIZER
+    // =========================================================================
+    let appState = {
+      view: 'map', // 'map', 'lesson', 'games', 'eval'
+      currentBabIdx: 0,
+      currentSubIdx: 0,
+      learningMode: 'bersama', // 'bersama', 'individu', 'kelompok'
+      activeGameId: 1,
+      completedSubIds: [],
+      earnedBadges: [],
+      showTeacherNotes: true,
+      groups: [
+        { name: "Kelompok A", score: 0, color: "bg-sky-600" },
+        { name: "Kelompok B", score: 0, color: "bg-emerald-600" }
+      ]
+    };
+
+    const AudioFX = {
+      ctx: null,
+      play(freqs, type = 'sine', dur = 0.16) {
+        try {
+          if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+          freqs.forEach((f, i) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(f, this.ctx.currentTime + i * 0.08);
+            gain.gain.setValueAtTime(0.14, this.ctx.currentTime + i * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + i * 0.08 + dur);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(this.ctx.currentTime + i * 0.08);
+            osc.stop(this.ctx.currentTime + i * 0.08 + dur);
+          });
+        } catch (e) {}
+      },
+      success() { this.play([523.25, 659.25, 783.99, 1046.5], 'triangle', 0.2); },
+      wrong() { this.play([230, 180], 'sawtooth', 0.2); },
+      click() { this.play([480], 'sine', 0.07); }
+    };
+
+    function saveProgress() {
+      try {
+        localStorage.setItem('wafa_tajwid_progress_v1', JSON.stringify({
+          completedSubIds: appState.completedSubIds,
+          earnedBadges: appState.earnedBadges
+        }));
+      } catch (e) {}
+      updateHeaderProgress();
+    }
+
+    function loadProgress() {
+      try {
+        const raw = localStorage.getItem('wafa_tajwid_progress_v1');
+        if (raw) {
+          const data = JSON.parse(raw);
+          appState.completedSubIds = data.completedSubIds || [];
+          appState.earnedBadges = data.earnedBadges || [];
+        }
+      } catch (e) {}
+      updateHeaderProgress();
+    }
+
+    function updateHeaderProgress() {
+      const totalSubs = WAFA_CHAPTERS.reduce((sum, ch) => sum + ch.subchapters.length, 0);
+      const done = appState.completedSubIds.length;
+      document.getElementById('progress-pill').textContent = `${done} / ${totalSubs} Subbab`;
+    }
+
+    // =========================================================================
+    // 3. NAVIGASI UTAMA & MODE PEMBELAJARAN
+    // =========================================================================
+    function navigateTo(viewName) {
+      appState.view = viewName;
+      ['map', 'lesson', 'games', 'eval'].forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if (el) el.classList.toggle('hidden', v !== viewName);
+      });
+
+      if (viewName === 'map') renderChapterMap();
+      if (viewName === 'games') renderGamesHub();
+      if (viewName === 'eval') renderEvalView();
+    }
+
+    function setLearningMode(mode) {
+      appState.learningMode = mode;
+      ['bersama', 'individu', 'kelompok'].forEach(m => {
+        const btn = document.getElementById(`mode-pill-${m}`);
+        if (m === mode) {
+          btn.className = "px-2.5 py-0.5 rounded-lg bg-amber-400 text-amber-950 font-extrabold cursor-pointer";
+        } else {
+          btn.className = "px-2.5 py-0.5 rounded-lg bg-white/15 hover:bg-white/25 text-white font-bold cursor-pointer";
+        }
+      });
+
+      const strip = document.getElementById('group-scoreboard-strip');
+      if (mode === 'kelompok') {
+        strip.classList.remove('hidden');
+        strip.classList.add('flex');
+        renderGroupStrip();
+      } else {
+        strip.classList.add('hidden');
+        strip.classList.remove('flex');
+      }
+    }
+
+    function renderGroupStrip() {
+      const box = document.getElementById('group-scores-badges');
+      box.innerHTML = appState.groups.map((g, idx) => `
+        <span class="px-2.5 py-0.5 rounded-lg ${g.color} text-white font-bold text-xs flex items-center gap-1.5">
+          <span>${g.name}: <b>${g.score}</b></span>
+          <button onclick="addGroupScore(${idx}, 10)" class="bg-white/25 hover:bg-white/40 px-1 rounded text-[10px] cursor-pointer">+10</button>
+        </span>
+      `).join('');
+    }
+
+    function addGroupScore(idx, pts) {
+      if (!appState.groups[idx]) return;
+      appState.groups[idx].score += pts;
+      AudioFX.success();
+      renderGroupStrip();
+    }
+
+    function updateGroupCount(val) {
+      const n = parseInt(val, 10);
+      const colors = ["bg-sky-600", "bg-emerald-600", "bg-amber-600", "bg-purple-600"];
+      const names = ["Kelompok A", "Kelompok B", "Kelompok C", "Kelompok D"];
+      appState.groups = Array.from({ length: n }, (_, i) => ({
+        name: appState.groups[i]?.name || names[i],
+        score: appState.groups[i]?.score || 0,
+        color: colors[i]
+      }));
+      renderGroupStrip();
+      renderTeacherGroupControls();
+    }
+
+    // =========================================================================
+    // 4. VIEW 1: PETA PETUALANGAN 10 BAB
+    // =========================================================================
+    function renderChapterMap() {
+      const grid = document.getElementById('chapters-map-grid');
+      grid.innerHTML = WAFA_CHAPTERS.map((ch, babIdx) => {
+        const doneCount = ch.subchapters.filter(s => appState.completedSubIds.includes(s.id)).length;
+        const total = ch.subchapters.length;
+        const isComplete = doneCount === total;
+
+        const subPills = ch.subchapters.map((sub, sIdx) => {
+          const done = appState.completedSubIds.includes(sub.id);
+          return `
+            <button onclick="openLesson(${babIdx}, ${sIdx})"
+              class="text-left px-2.5 py-1 rounded-lg text-xs font-bold border transition flex items-center justify-between gap-1 cursor-pointer ${done ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-slate-50 hover:bg-amber-50 border-slate-200 text-slate-700'}">
+              <span class="truncate">${sub.name}</span>
+              <span>${done ? '✅' : '➡️'}</span>
+            </button>
+          `;
+        }).join('');
+
+        return `
+          <article class="bg-white rounded-3xl p-4 sm:p-5 shadow-md border-3 ${isComplete ? 'border-emerald-400' : 'border-amber-200'} flex flex-col justify-between hover:shadow-lg transition">
+            <div>
+              <div class="flex items-start justify-between gap-2 mb-2">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-11 h-11 rounded-2xl bg-amber-100 border-2 border-amber-300 text-2xl flex items-center justify-center shrink-0">
+                    ${ch.icon}
+                  </span>
+                  <div>
+                    <span class="text-[11px] font-extrabold text-teal-700 uppercase block">${ch.islandName}</span>
+                    <h3 class="font-display font-bold text-base sm:text-lg text-slate-900 leading-snug">${ch.title}</h3>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-[11px] font-extrabold shrink-0 ${isComplete ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900'}">
+                  ${doneCount}/${total}
+                </span>
+              </div>
+
+              <!-- Daftar Subbab Sesuai Daftar Isi Wafa -->
+              <div class="grid grid-cols-1 gap-1.5 my-3 max-h-40 overflow-y-auto pr-1">
+                ${subPills}
+              </div>
+            </div>
+
+            <!-- 4 Tombol Aksi Cepat Per Bab -->
+            <div class="pt-3 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+              <button onclick="openLesson(${babIdx}, 0)" class="py-2 px-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-display font-bold text-xs cursor-pointer">
+                📖 Materi
+              </button>
+              <button onclick="openLesson(${babIdx}, 0, 'examples')" class="py-2 px-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 font-display font-bold text-xs cursor-pointer">
+                🕌 Contoh
+              </button>
+              <button onclick="openChapterGame(${ch.bab}, 2)" class="py-2 px-2 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-900 font-display font-bold text-xs cursor-pointer">
+                ✏️ Latihan
+              </button>
+              <button onclick="openChapterGame(${ch.bab}, 1)" class="py-2 px-2 rounded-xl bg-purple-100 hover:bg-purple-200 text-purple-900 font-display font-bold text-xs cursor-pointer">
+                🎮 Game
+              </button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // 5. VIEW 2: RUANG BELAJAR MATERI 9 KOMPONEN KONSISTEN
+    // =========================================================================
+    function openLesson(babIdx, subIdx, scrollTarget = null) {
+      appState.currentBabIdx = babIdx;
+      appState.currentSubIdx = subIdx;
+      navigateTo('lesson');
+      renderLessonView();
+
+      if (scrollTarget === 'examples') {
+        setTimeout(() => {
+          const el = document.getElementById('lesson-examples-section');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+
+    function prevSubchapter() {
+      if (appState.currentSubIdx > 0) {
+        openLesson(appState.currentBabIdx, appState.currentSubIdx - 1);
+      } else if (appState.currentBabIdx > 0) {
+        const prevBab = WAFA_CHAPTERS[appState.currentBabIdx - 1];
+        openLesson(appState.currentBabIdx - 1, prevBab.subchapters.length - 1);
+      }
+    }
+
+    function nextSubchapter() {
+      const curBab = WAFA_CHAPTERS[appState.currentBabIdx];
+      if (appState.currentSubIdx < curBab.subchapters.length - 1) {
+        openLesson(appState.currentBabIdx, appState.currentSubIdx + 1);
+      } else if (appState.currentBabIdx < WAFA_CHAPTERS.length - 1) {
+        openLesson(appState.currentBabIdx + 1, 0);
+      } else {
+        navigateTo('eval');
+      }
+    }
+
+    function markSubchapterMastered(subId) {
+      if (!appState.completedSubIds.includes(subId)) {
+        appState.completedSubIds.push(subId);
+        saveProgress();
+        AudioFX.success();
+        launchConfetti();
+      }
+      renderLessonView();
+    }
+
+    function renderLessonView() {
+      const bab = WAFA_CHAPTERS[appState.currentBabIdx];
+      const sub = bab.subchapters[appState.currentSubIdx];
+      const isMastered = appState.completedSubIds.includes(sub.id);
+
+      // Tabs subbab
+      const tabsEl = document.getElementById('subchapter-tabs');
+      tabsEl.innerHTML = bab.subchapters.map((s, idx) => `
+        <button onclick="openLesson(${appState.currentBabIdx}, ${idx})"
+          class="px-3 py-1.5 rounded-xl font-display font-bold text-xs border transition cursor-pointer ${idx === appState.currentSubIdx ? 'bg-teal-700 text-white border-teal-800 shadow-xs' : 'bg-slate-50 hover:bg-amber-50 text-slate-700 border-slate-200'}">
+          ${s.name}
+        </button>
+      `).join('');
+
+      const lettersBadges = sub.letters.map(l =>
+        `<span class="font-arabic text-2xl sm:text-3xl font-bold px-3.5 py-1 rounded-2xl bg-amber-100 border-2 border-amber-300 text-teal-950 shadow-xs">${l}</span>`
+      ).join('');
+
+      const examplesHtml = sub.examples.map((ex, idx) => `
+        <div class="p-4 rounded-2xl bg-gradient-to-b from-amber-50/90 to-white border-2 border-amber-200 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded-full bg-teal-700 text-white font-bold text-[11px]">Contoh ${idx + 1} • ${ex.surah}</span>
+            <button onclick="AudioFX.success()" class="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs cursor-pointer">
+              🔊 Dengarkan Ketukan
+            </button>
+          </div>
+          <p class="font-arabic text-2xl sm:text-3xl font-bold text-slate-900 text-right py-1">${ex.ar}</p>
+          <div class="text-xs space-y-1 pt-2 border-t border-amber-100">
+            <p class="text-slate-700"><b>🔍 Alasan Hukum:</b> ${ex.reason}</p>
+            <p class="text-emerald-800"><b>🗣️ Cara Membaca:</b> ${ex.how}</p>
+          </div>
+        </div>
+      `).join('');
+
+      const compRowsHtml = sub.comparison.rows.map(r => `
+        <tr class="border-t border-slate-200">
+          <td class="p-2.5 font-medium text-slate-700">${r[0]}</td>
+          <td class="p-2.5 font-medium text-slate-700">${r[1]}</td>
+        </tr>
+      `).join('');
+
+      const mistakesHtml = sub.mistakes.map(m => `
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+          <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-900">
+            <b>❌ Kurang Tepat:</b> ${m.wrong}
+          </div>
+          <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900">
+            <b>✅ Cara yang Benar:</b> ${m.right}
+          </div>
+        </div>
+      `).join('');
+
+      const container = document.getElementById('lesson-content-container');
+      container.innerHTML = `
+        <!-- 1. NAMA MATERI & TULISAN ARAB -->
+        <div class="bg-gradient-to-r from-teal-700 to-emerald-700 rounded-3xl p-5 sm:p-6 text-white shadow-lg border-4 border-amber-300 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <span class="px-3 py-0.5 rounded-full bg-amber-400 text-amber-950 font-extrabold text-xs uppercase">${bab.title}</span>
+            <h2 class="font-display text-2xl sm:text-3xl font-bold mt-1.5">${sub.name}</h2>
+            <p class="text-sm font-bold text-amber-200 mt-0.5">${sub.pronunciation}</p>
+          </div>
+          <div class="bg-white/15 backdrop-blur-xs px-6 py-3 rounded-2xl border border-white/30 text-center">
+            <p class="font-arabic text-3xl sm:text-4xl font-bold text-amber-200">${sub.arabicTitle}</p>
+          </div>
+        </div>
+
+        <!-- 2. PENGERTIAN SEDERHANA & ANALOGI KEHIDUPAN SEHARI-HARI -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 bg-white rounded-3xl p-5 shadow-md border-2 border-teal-200 space-y-2">
+            <h3 class="font-display font-bold text-lg text-teal-900 flex items-center gap-2">
+              <span>📘</span> 2. Pengertian Sederhana (Kelas 3 SD)
+            </h3>
+            <p class="text-sm sm:text-base text-slate-700 leading-relaxed font-medium">${sub.definition}</p>
+          </div>
+
+          <div class="lg:col-span-5 bg-gradient-to-br from-amber-50 to-yellow-100 rounded-3xl p-5 shadow-md border-2 border-amber-300 space-y-2">
+            <h3 class="font-display font-bold text-lg text-amber-950 flex items-center gap-2">
+              <span>🐝</span> ${sub.analogy.title}
+            </h3>
+            <p class="text-sm text-amber-950 leading-relaxed font-medium">${sub.analogy.text}</p>
+          </div>
+        </div>
+
+        <!-- 3. CIRI-CIRI, 4. RUMUS KUNCI, & 5. CARA MEMBACA -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-sky-200 space-y-3">
+            <h3 class="font-display font-bold text-base text-sky-900">🔎 3. Ciri-Ciri & Huruf Kunci</h3>
+            <p class="text-xs sm:text-sm text-slate-700 font-medium">${sub.signs}</p>
+            <div class="flex flex-wrap gap-2 pt-1">${lettersBadges}</div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-purple-200 space-y-3">
+            <h3 class="font-display font-bold text-base text-purple-900">🔑 4. Rumus / Kunci Mengingat</h3>
+            <div class="p-3.5 rounded-2xl bg-purple-50 border-2 border-purple-300 font-display font-bold text-sm sm:text-base text-purple-950 text-center">
+              ${sub.formula}
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-emerald-200 space-y-3">
+            <h3 class="font-display font-bold text-base text-emerald-900">🗣️ 5. Cara Membaca</h3>
+            <p class="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">${sub.howToRead}</p>
+          </div>
+        </div>
+
+        <!-- 6. CONTOH DALAM AL-QUR'AN -->
+        <div id="lesson-examples-section" class="bg-white rounded-3xl p-5 shadow-md border-2 border-amber-300 space-y-3">
+          <h3 class="font-display font-bold text-lg text-slate-900">🕌 6. Contoh dalam Ayat Al-Qur'an</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+            ${examplesHtml}
+          </div>
+        </div>
+
+        <!-- 7. PERBANDINGAN DENGAN MATERI LAIN & 8. KESALAHAN YANG SERING TERJADI -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-indigo-200 space-y-3">
+            <h3 class="font-display font-bold text-base text-indigo-950">⚖️ 7. ${sub.comparison.title}</h3>
+            <div class="overflow-x-auto rounded-2xl border border-slate-200">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-indigo-50 text-indigo-950 font-extrabold">
+                  <tr>
+                    <th class="p-2.5">${sub.comparison.colA}</th>
+                    <th class="p-2.5">${sub.comparison.colB}</th>
+                  </tr>
+                </thead>
+                <tbody>${compRowsHtml}</tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-5 shadow-md border-2 border-rose-200 space-y-3">
+            <h3 class="font-display font-bold text-base text-rose-950">⚠️ 8. Kesalahan yang Sering Terjadi</h3>
+            <div class="space-y-2">${mistakesHtml}</div>
+          </div>
+        </div>
+
+        <!-- 9. RINGKASAN MATERI & CATATAN KHUSUS GURU -->
+        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-3xl p-5 shadow-md border-2 border-emerald-300 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h3 class="font-display font-bold text-lg text-emerald-950">📌 9. Ringkasan Kartu Ingat</h3>
+            <button onclick="markSubchapterMastered('${sub.id}')"
+              class="px-5 py-2.5 rounded-2xl font-display font-bold text-sm shadow-md transition cursor-pointer ${isMastered ? 'bg-emerald-600 text-white' : 'bg-amber-400 hover:bg-amber-500 text-amber-950 border-b-4 border-amber-600'}">
+              ${isMastered ? '✅ Alhamdulillah Sudah Dikuasai!' : '⭐ Tandai Sudah Paham & Kuasai'}
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-xs">
+            <div class="bg-white p-3 rounded-xl border border-emerald-200"><b>Nama Hukum:</b><br>${sub.summary.hukum}</div>
+            <div class="bg-white p-3 rounded-xl border border-emerald-200"><b>Ciri-Ciri:</b><br>${sub.summary.ciri}</div>
+            <div class="bg-white p-3 rounded-xl border border-emerald-200"><b>Huruf Kunci:</b><br>${sub.summary.huruf}</div>
+            <div class="bg-white p-3 rounded-xl border border-emerald-200"><b>Cara Membaca:</b><br>${sub.summary.cara}</div>
+            <div class="bg-white p-3 rounded-xl border border-emerald-200"><b>Contoh Ayat:</b><br><span class="font-arabic text-base font-bold">${sub.summary.contoh}</span></div>
+          </div>
+
+          ${appState.showTeacherNotes ? `
+            <div class="p-3 rounded-xl bg-teal-900/5 border border-teal-300 text-xs text-teal-950">
+              <b>👩‍🏫 Panduan Metodologi Guru (Metode Wafa):</b> ${sub.teacherNote}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 6. VIEW 3: 10 PERMAINAN EDUKATIF INTERAKTIF
+    // =========================================================================
+    const GAME_CATALOG = [
+      { id: 1, name: "1. Detektif Tajwid", icon: "🕵️" },
+      { id: 2, name: "2. Tebak Hukum Bacaan", icon: "🎯" },
+      { id: 3, name: "3. Pasangkan Pasangan", icon: "🔗" },
+      { id: 4, name: "4. Berburu Huruf", icon: "🔤" },
+      { id: 5, name: "5. Benar atau Salah", icon: "⚖️" },
+      { id: 6, name: "6. Kelompokkan Ayat", icon: "🗂️" },
+      { id: 7, name: "7. Roda Keberuntungan", icon: "🎡" },
+      { id: 8, name: "8. Tantangan Baca Qur'an", icon: "🎙️" },
+      { id: 9, name: "9. Puzzle Tajwid", icon: "🧩" },
+      { id: 10, name: "10. Kuis Petualangan", icon: "🚀" }
+    ];
+
+    function openChapterGame(babNum, gameId) {
+      navigateTo('games');
+      document.getElementById('game-chapter-filter').value = String(babNum);
+      selectGame(gameId);
+    }
+
+    function renderGamesHub() {
+      const filter = document.getElementById('game-chapter-filter');
+      if (filter.options.length <= 1) {
+        WAFA_CHAPTERS.forEach(ch => {
+          const opt = document.createElement('option');
+          opt.value = String(ch.bab);
+          opt.textContent = ch.title;
+          filter.appendChild(opt);
+        });
+      }
+
+      const grid = document.getElementById('game-selector-grid');
+      grid.innerHTML = GAME_CATALOG.map(g => `
+        <button onclick="selectGame(${g.id})"
+          class="p-2.5 rounded-2xl border-2 font-display font-bold text-xs transition flex items-center gap-2 cursor-pointer ${appState.activeGameId === g.id ? 'bg-amber-400 border-amber-600 text-amber-950 shadow-sm' : 'bg-slate-50 hover:bg-teal-50 border-slate-200 text-slate-700'}">
+          <span class="text-base">${g.icon}</span>
+          <span class="truncate">${g.name}</span>
+        </button>
+      `).join('');
+
+      renderActiveGame();
+    }
+
+    function selectGame(id) {
+      appState.activeGameId = id;
+      renderGamesHub();
+    }
+
+    function getFilteredSubchapters() {
+      const val = document.getElementById('game-chapter-filter')?.value || 'all';
+      if (val === 'all') return WAFA_CHAPTERS.flatMap(ch => ch.subchapters);
+      const bab = WAFA_CHAPTERS.find(ch => String(ch.bab) === val);
+      return bab ? bab.subchapters : WAFA_CHAPTERS[0].subchapters;
+    }
+
+    function pickRandom(arr, n = 1) {
+      const copy = [...arr].sort(() => Math.random() - 0.5);
+      return n === 1 ? copy[0] : copy.slice(0, n);
+    }
+
+    let matchSelectedLeft = null;
+    let quizAdventureScore = 0;
+    let quizAdventureStep = 0;
+
+    function renderActiveGame() {
+      const stage = document.getElementById('game-stage-container');
+      const pool = getFilteredSubchapters();
+      const targetSub = pickRandom(pool, 1);
+      const gid = appState.activeGameId;
+
+      if (gid === 1) {
+        // 1. DETEKTIF TAJWID: Temukan kata berhukum tajwid target pada potongan ayat
+        const ex = pickRandom(targetSub.examples, 1);
+        const distractors = pickRandom(pool.filter(s => s.id !== targetSub.id), 2);
+        const allItems = pickRandom([
+          { label: ex.ar, isTarget: true, surah: ex.surah, reason: ex.reason },
+          ...distractors.map(d => {
+            const dex = pickRandom(d.examples, 1);
+            return { label: dex.ar, isTarget: false, surah: dex.surah, reason: d.summary.hukum };
+          })
+        ], 3);
+
+        stage.innerHTML = `
+          <div class="max-w-2xl mx-auto text-center space-y-4">
+            <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-extrabold text-xs uppercase">🕵️ Misi Detektif Tajwid</span>
+            <h3 class="font-display text-xl sm:text-2xl font-bold text-slate-800">
+              Carilah potongan ayat yang mengandung hukum: <span class="text-teal-700 underline">${targetSub.summary.hukum}</span>!
+            </h3>
+            <p class="text-xs text-slate-500 font-bold">Petunjuk: ${targetSub.signs}</p>
+            <div class="space-y-2.5 pt-2">
+              ${allItems.map((it, i) => `
+                <button onclick="checkSingleChoice(this, ${it.isTarget}, 'MasyaAllah, Detektif Hebat! ${it.reason}')"
+                  class="w-full p-4 rounded-2xl bg-slate-50 hover:bg-amber-50 border-2 border-slate-200 transition text-right flex items-center justify-between gap-3 cursor-pointer">
+                  <span class="text-xs font-bold text-slate-400 shrink-0">${it.surah}</span>
+                  <span class="font-arabic text-2xl font-bold text-slate-900">${it.label.replace(/<[^>]*>/g, '')}</span>
+                </button>
+              `).join('')}
+            </div>
+            <div id="game-feedback-box" class="hidden p-3.5 rounded-2xl font-display font-bold text-sm"></div>
+            <button onclick="renderActiveGame()" class="px-5 py-2 rounded-xl bg-teal-600 text-white font-display font-bold text-xs cursor-pointer">🔄 Soal Detektif Berikutnya</button>
+          </div>
+        `;
+      } else if (gid === 2) {
+        // 2. TEBAK HUKUM BACAAN
+        const ex = pickRandom(targetSub.examples, 1);
+        const options = pickRandom([
+          targetSub,
+          ...pickRandom(pool.filter(s => s.id !== targetSub.id), 3)
+        ], 4);
+
+        stage.innerHTML = `
+          <div class="max-w-2xl mx-auto text-center space-y-4">
+            <span class="px-3 py-1 rounded-full bg-sky-100 text-sky-900 font-extrabold text-xs uppercase">🎯 Tebak Hukum Bacaan</span>
+            <p class="text-sm font-bold text-slate-600">Perhatikan bagian yang ditandai warna pada ayat berikut, apa nama hukum tajwidnya?</p>
+            <div class="p-5 rounded-3xl bg-amber-50 border-2 border-amber-300">
+              <p class="font-arabic text-3xl sm:text-4xl font-bold text-slate-900">${ex.ar}</p>
+              <span class="text-xs font-bold text-amber-800 mt-2 block">${ex.surah}</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              ${options.map(opt => `
+                <button onclick="checkSingleChoice(this, ${opt.id === targetSub.id}, 'Alhamdulillah Benar! ${ex.reason}')"
+                  class="p-3.5 rounded-2xl bg-white hover:bg-teal-50 border-2 border-slate-200 font-display font-bold text-sm text-slate-800 transition cursor-pointer">
+                  ${opt.summary.hukum}
+                </button>
+              `).join('')}
+            </div>
+            <div id="game-feedback-box" class="hidden p-3.5 rounded-2xl font-display font-bold text-sm"></div>
+            <button onclick="renderActiveGame()" class="px-5 py-2 rounded-xl bg-teal-600 text-white font-display font-bold text-xs cursor-pointer">🔄 Pertanyaan Baru</button>
+          </div>
+        `;
+      } else if (gid === 3) {
+        // 3. PASANGKAN PASANGAN (MATCHING)
+        const pairs = pickRandom(pool, Math.min(4, pool.length));
+        const rightShuffled = pickRandom(pairs, pairs.length);
+        matchSelectedLeft = null;
+
+        stage.innerHTML = `
+          <div class="max-w-3xl mx-auto space-y-4">
+            <div class="text-center">
+              <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-900 font-extrabold text-xs uppercase">🔗 Pasangkan Pasangan Tajwid</span>
+              <h3 class="font-display text-lg sm:text-xl font-bold text-slate-800 mt-1">Klik Nama Hukum di kiri, lalu klik Huruf/Ciri pasangannya di kanan!</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-2">
+                ${pairs.map(p => `
+                  <button id="match-L-${p.id}" onclick="selectMatchLeft('${p.id}')"
+                    class="w-full p-3 rounded-2xl bg-teal-50 border-2 border-teal-300 font-display font-bold text-xs sm:text-sm text-teal-950 text-left cursor-pointer">
+                    ${p.summary.hukum}
+                  </button>
+                `).join('')}
+              </div>
+              <div class="space-y-2">
+                ${rightShuffled.map(p => `
+                  <button id="match-R-${p.id}" onclick="selectMatchRight('${p.id}')"
+                    class="w-full p-3 rounded-2xl bg-amber-50 border-2 border-amber-300 font-bold text-xs sm:text-sm text-amber-950 text-left cursor-pointer">
+                    ${p.summary.huruf} — (${p.summary.cara})
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+            <div id="game-feedback-box" class="hidden p-3 rounded-2xl font-display font-bold text-sm text-center"></div>
+            <div class="text-center">
+              <button onclick="renderActiveGame()" class="px-5 py-2 rounded-xl bg-teal-600 text-white font-display font-bold text-xs cursor-pointer">🔄 Acak Pasangan Baru</button>
+            </div>
+          </div>
+        `;
+      } else if (gid === 4) {
+        // 4. BERBURU HURUF
+        const allHijaiyah = ["ء", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "و", "هـ", "ي"];
+        const targetLetters = targetSub.letters.filter(l => allHijaiyah.includes(l));
+        const validSet = targetLetters.length > 0 ? targetLetters : ["ن", "م"];
+
+        stage.innerHTML = `
+          <div class="max-w-2xl mx-auto text-center space-y-4">
+            <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 font-extrabold text-xs uppercase">🔤 Berburu Huruf Tajwid</span>
+            <h3 class="font-display text-xl font-bold text-slate-800">
+              Temukan huruf-huruf yang menjadi penyebab hukum <span class="text-emerald-700">${targetSub.summary.hukum}</span>!
+            </h3>
+            <p class="text-xs font-bold text-slate-500">Kunci: ${targetSub.summary.huruf}</p>
+            <div class="grid grid-cols-7 gap-2 pt-2">
+              ${allHijaiyah.map(h => {
+                const isHit = validSet.includes(h);
+                return `
+                  <button onclick="huntLetterClick(this, ${isHit})"
+                    class="py-2.5 rounded-xl bg-white hover:bg-amber-50 border-2 border-slate-200 font-arabic text-2xl font-bold text-slate-800 cursor-pointer">
+                    ${h}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+            <button onclick="renderActiveGame()" class="px-5 py-2 rounded-xl bg-teal-600 text-white font-display font-bold text-xs cursor-pointer">🔄 Ganti Hukum Target</button>
+          </div>
+        `;
+      } else if (gid === 5) {
+        // 5. BENAR ATAU SALAH
+        const isTrueStatement = Math.random() > 0.5;
+        const otherSub = pickRandom(pool.filter(s => s.id !== targetSub.id), 1);
+        const statement = isTrueStatement
+          ? `${targetSub.summary.hukum} dibaca dengan cara: ${targetSub.summary.cara}.`
+          : `${targetSub.summary.hukum} dibaca dengan cara: ${otherSub.summary.cara}.`;
+
+        stage.innerHTML = `
+          <div class="max-w-xl mx-auto text-center space-y-5 py-4">
+            <span class="px-3 py-1 rounded-full bg-rose-100 text-rose-900 font-extrabold text-xs uppercase">⚖️ Pernyataan Benar atau Salah?</span>
+            <div class="p-6 rounded-3xl bg-slate-50 border-2 border-slate-200 font-display font-bold text-lg sm:text-xl text-slate-800">
+              "${statement}"
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <button onclick="checkSingleChoice(this, ${isTrueStatement === true}, 'Tepat Sekali! ${targetSub.summary.hukum}: ${targetSub.summary.cara}.')"
+                class="py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-display font-bold text-lg shadow-md cursor-pointer">
+                ✅ BENAR
+              </button>
+              <button onclick="checkSingleChoice(this, ${isTrueStatement === false}, 'Hebat! Yang tepat adalah: ${targetSub.summary.cara}.')"
+                class="py-4 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-display font-bold text-lg shadow-md cursor-pointer">
+                ❌ SALAH
+              </button>
+            </div>
+            <div id="game-feedback-box" class="hidden p-3.5 rounded-2xl font-display font-bold text-sm"></div>
+            <button onclick="renderActiveGame()" class="px-5 py-2 rounded-xl bg-teal-600 text-white font-display font-bold text-xs cursor-pointer">🔄 Pernyataan Berikutnya</button>
+          </div>
+        `;
+      } else if (gid === 6) {
+        // 6. KELOMPOKKAN AYAT
+        const twoSubs = pickRandom(pool, 2);
+        const cards = pickRandom([
+          { text: twoSubs[0].examples[0].ar, owner: 0 },
+          { text: twoSubs[0].examples[1].ar, owner: 0 },
+          { text: twoSubs[1].examples[0].ar, owner: 1 },
+          { text: twoSubs[1].examples[1].ar, owner: 1 }
+        ], 4);
+
+        stage.innerHTML = `
+          <div class="max-w-3xl mx-auto space-y-4">
+            <div class="text-center">
+              <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-900 font-extrabold text-xs uppercase">🗂️ Kelompokkan Ayat</span>
+              <h3 class="font-display text-lg font-bold text-slate-800 mt-1">Klik tombol keranjang hukum yang sesuai untuk masing-masing ayat!</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-center">
+              <div class="p-3 rounded-2xl bg-teal-100 border-2 border-teal-400 font-display font-bold text-teal-950">Keranjang A: ${twoSubs[0].summary.hukum}</div>
+              <div class="p-3 rounded-2xl bg-amber-100 border-2 border-amber-400 font-display font-bold text-amber-950">Keranjang B: ${twoSubs[1].summary.hukum}</div>
+            </div>
+            <div class="space-y-2.5">
+              ${cards.map((c, idx) => `
+                <div id="group-card-${idx}" class="p-3.5 rounded-2xl bg-white border-2 border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                  <div class="flex gap-2">
+                    <button onclick="classifyVerse(${idx}, 0, ${c.owner})" class="px-3 py-1.5 rounded-xl bg-teal-600 text-white font-bold text-xs cursor-pointer">Masuk Keranjang A</button>
+                    <button onclick="classifyVerse(${idx}, 1, ${c.owner})" class="px-3 py-1.5 rounded-xl bg-amber-500 text-white font-bold text-xs cursor-pointer">Masuk Keranjang B</button>
+                  </div>
+                  <p class="font-arabic text-xl sm:text-2xl font-bold text-slate-900">${c.text}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (gid === 7) {
+        // 7. RODA KEBERUNTUNGAN TAJWID
+        stage.innerHTML = `
+          <div class="max-w-xl mx-auto text-center space-y-4 py-2">
+            <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-extrabold text-xs uppercase">🎡 Roda Keberuntungan Tajwid</span>
+            <h3 class="font-display text-xl font-bold text-slate-800">Putar roda untuk mendapatkan tantangan tajwid acak!</h3>
+            <div class="py-3 flex justify-center">
+              <div id="lucky-wheel-disc" class="w-40 h-40 rounded-full border-8 border-amber-400 bg-gradient-to-tr from-teal-500 via-amber-400 to-rose-500 shadow-xl flex items-center justify-center text-5xl">
+                🎡
+              </div>
+            </div>
+            <button onclick="spinLuckyWheel()" class="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 text-white font-display font-bold text-base shadow-md cursor-pointer">
+              🎲 PUTAR RODA SEKARANG!
+            </button>
+            <div id="wheel-result-box" class="hidden p-4 rounded-2xl bg-teal-50 border-2 border-teal-300 text-left space-y-2"></div>
+          </div>
+        `;
+      } else if (gid === 8) {
+        // 8. TANTANGAN BACA AL-QUR'AN (PENILAIAN LANGSUNG GURU)
+        const ex = pickRandom(targetSub.examples, 1);
+        stage.innerHTML = `
+          <div class="max-w-2xl mx-auto text-center space-y-4">
+            <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-900 font-extrabold text-xs uppercase">🎙️ Tantangan Praktik Baca Al-Qur'an</span>
+            <h3 class="font-display text-xl font-bold text-slate-800">Bacakan ayat berikut dengan menerapkan hukum <span class="text-teal-700">${targetSub.summary.hukum}</span>!</h3>
+            <div class="p-5 rounded-3xl bg-amber-50 border-2 border-amber-300">
+              <p class="font-arabic text-3xl sm:text-4xl font-bold text-slate-900">${ex.ar}</p>
+              <p class="text-xs font-bold text-teal-800 mt-2">${ex.surah} • ${ex.how}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="gradeOralGame(true)" class="py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-display font-bold text-sm cursor-pointer">
+                🌟 Bacaan Sangat Tepat (+15 Poin)
+              </button>
+              <button onclick="gradeOralGame(false)" class="py-3 rounded-2xl bg-amber-100 hover:bg-amber-200 text-amber-950 font-display font-bold text-sm cursor-pointer">
+                🔄 Ulangi Latihan Bacaan
+              </button>
+            </div>
+            <div id="game-feedback-box" class="hidden p-3 rounded-2xl font-display font-bold text-sm"></div>
+          </div>
+        `;
+      } else if (gid === 9) {
+        // 9. PUZZLE TAJWID (SUSUN KARTU INFORMASI HUKUM)
+        const pieces = pickRandom([
+          { step: 1, label: `Nama Hukum: ${targetSub.summary.hukum}` },
+          { step: 2, label: `Huruf Kunci: ${targetSub.summary.huruf}` },
+          { step: 3, label: `Cara Baca: ${targetSub.summary.cara}` },
+          { step: 4, label: `Contoh: ${targetSub.summary.contoh}` }
+        ], 4);
+
+        stage.innerHTML = `
+          <div class="max-w-xl mx-auto text-center space-y-4">
+            <span class="px-3 py-1 rounded-full bg-teal-100 text-teal-900 font-extrabold text-xs uppercase">🧩 Puzzle Kartu Informasi Tajwid</span>
+            <h3 class="font-display text-lg font-bold text-slate-800">Klik kartu secara berurutan: 1) Nama Hukum → 2) Huruf → 3) Cara Baca → 4) Contoh!</h3>
+            <div id="puzzle-seq-progress" class="text-xs font-extrabold text-teal-700">Langkah berikutnya: Kartu #1</div>
+            <div class="space-y-2">
+              ${pieces.map(p => `
+                <button onclick="clickPuzzleSeq(this, ${p.step})"
+                  class="w-full p-3.5 rounded-2xl bg-white hover:bg-amber-50 border-2 border-slate-200 font-display font-bold text-sm text-slate-800 cursor-pointer">
+                  ${p.label}
+                </button>
+              `).join('')}
+            </div>
+            <button onclick="renderActiveGame()" class="px-5 py-2 rounded-xl bg-teal-600 text-white font-display font-bold text-xs cursor-pointer">🔄 Acak Puzzle Baru</button>
+          </div>
+        `;
+        window._puzzleExpectedStep = 1;
+      } else if (gid === 10) {
+        // 10. KUIS PETUALANGAN CAMPURAN
+        renderAdventureQuizStep(stage, pool);
+      }
+    }
+
+    function checkSingleChoice(btn, isCorrect, msg) {
+      const box = document.getElementById('game-feedback-box');
+      box.classList.remove('hidden');
+      if (isCorrect) {
+        AudioFX.success();
+        btn.classList.add('bg-emerald-100', 'border-emerald-500');
+        box.className = "p-3.5 rounded-2xl bg-emerald-100 text-emerald-950 border-2 border-emerald-400 font-display font-bold text-sm";
+        box.textContent = `🌟 ${msg}`;
+      } else {
+        AudioFX.wrong();
+        btn.classList.add('bg-rose-100', 'border-rose-400');
+        box.className = "p-3.5 rounded-2xl bg-rose-100 text-rose-950 border-2 border-rose-300 font-display font-bold text-sm";
+        box.textContent = "💪 Belum tepat, coba perhatikan ciri huruf dan harakatnya lagi ya!";
+      }
+    }
+
+    function selectMatchLeft(id) {
+      matchSelectedLeft = id;
+      AudioFX.click();
+      document.querySelectorAll('[id^="match-L-"]').forEach(el => el.classList.remove('ring-4', 'ring-amber-400'));
+      const el = document.getElementById(`match-L-${id}`);
+      if (el) el.classList.add('ring-4', 'ring-amber-400');
+    }
+
+    function selectMatchRight(id) {
+      if (!matchSelectedLeft) return;
+      const box = document.getElementById('game-feedback-box');
+      box.classList.remove('hidden');
+      if (matchSelectedLeft === id) {
+        AudioFX.success();
+        document.getElementById(`match-L-${id}`).classList.add('bg-emerald-200', 'border-emerald-500');
+        document.getElementById(`match-R-${id}`).classList.add('bg-emerald-200', 'border-emerald-500');
+        box.className = "p-3 rounded-2xl bg-emerald-100 text-emerald-950 font-display font-bold text-sm text-center";
+        box.textContent = "✅ MasyaAllah, pasangan cocok!";
+        matchSelectedLeft = null;
+      } else {
+        AudioFX.wrong();
+        box.className = "p-3 rounded-2xl bg-rose-100 text-rose-950 font-display font-bold text-sm text-center";
+        box.textContent = "🔄 Belum cocok, coba pasangkan lagi!";
+      }
+    }
+
+    function huntLetterClick(btn, isHit) {
+      if (isHit) {
+        AudioFX.success();
+        btn.className = "py-2.5 rounded-xl bg-emerald-500 text-white border-2 border-emerald-700 font-arabic text-2xl font-bold";
+      } else {
+        AudioFX.wrong();
+        btn.className = "py-2.5 rounded-xl bg-rose-100 text-rose-400 border-2 border-rose-200 font-arabic text-2xl font-bold opacity-60";
+      }
+    }
+
+    function classifyVerse(cardIdx, chosenBucket, actualOwner) {
+      const card = document.getElementById(`group-card-${cardIdx}`);
+      if (chosenBucket === actualOwner) {
+        AudioFX.success();
+        card.classList.add('bg-emerald-50', 'border-emerald-500');
+      } else {
+        AudioFX.wrong();
+        card.classList.add('bg-rose-50', 'border-rose-400');
+      }
+    }
+
+    function spinLuckyWheel() {
+      const disc = document.getElementById('lucky-wheel-disc');
+      const resBox = document.getElementById('wheel-result-box');
+      disc.classList.remove('wheel-spinning');
+      void disc.offsetWidth;
+      disc.classList.add('wheel-spinning');
+      AudioFX.click();
+
+      setTimeout(() => {
+        const pool = getFilteredSubchapters();
+        const chosen = pickRandom(pool, 1);
+        const ex = pickRandom(chosen.examples, 1);
+        AudioFX.success();
+        resBox.classList.remove('hidden');
+        resBox.innerHTML = `
+          <div class="font-display font-bold text-teal-900 text-base">🎯 Materi Terpilih: ${chosen.summary.hukum}</div>
+          <p class="text-xs text-slate-700"><b>Tantangan:</b> Sebutkan huruf kunci dan bacakan contoh ayat berikut dengan benar!</p>
+          <p class="font-arabic text-2xl font-bold text-slate-900 text-right">${ex.ar}</p>
+          <p class="text-xs font-bold text-emerald-800">Kunci: ${chosen.summary.huruf} • ${chosen.summary.cara}</p>
+        `;
+      }, 1600);
+    }
+
+    function gradeOralGame(isGood) {
+      const box = document.getElementById('game-feedback-box');
+      box.classList.remove('hidden');
+      if (isGood) {
+        AudioFX.success();
+        box.className = "p-3 rounded-2xl bg-emerald-100 text-emerald-950 font-display font-bold text-sm";
+        box.textContent = "🌟 Mumtaz! Bacaan tajwid sudah tepat dan tartil!";
+        setTimeout(() => renderActiveGame(), 1200);
+      } else {
+        AudioFX.wrong();
+        box.className = "p-3 rounded-2xl bg-amber-100 text-amber-950 font-display font-bold text-sm";
+        box.textContent = "📖 Mari perhatikan tanda harakat & dengung/panjangnya lalu coba baca kembali!";
+      }
+    }
+
+    function clickPuzzleSeq(btn, step) {
+      if (step === window._puzzleExpectedStep) {
+        AudioFX.success();
+        btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-950');
+        window._puzzleExpectedStep++;
+        const prog = document.getElementById('puzzle-seq-progress');
+        prog.textContent = window._puzzleExpectedStep <= 4
+          ? `Langkah berikutnya: Kartu #${window._puzzleExpectedStep}`
+          : "🏆 MasyaAllah! Semua kartu puzzle tersusun sempurna!";
+      } else {
+        AudioFX.wrong();
+      }
+    }
+
+    function renderAdventureQuizStep(stage, pool) {
+      const qSub = pickRandom(pool, 1);
+      const opts = pickRandom([qSub, ...pickRandom(pool.filter(s => s.id !== qSub.id), 3)], 4);
+      stage.innerHTML = `
+        <div class="max-w-2xl mx-auto text-center space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-purple-100 text-purple-900 font-extrabold text-xs uppercase">🚀 Kuis Petualangan Ahli Tajwid</span>
+            <span class="font-display font-bold text-sm text-amber-700">Skor Petualangan: ${quizAdventureScore}</span>
+          </div>
+          <div class="p-4 rounded-2xl bg-teal-50 border-2 border-teal-200">
+            <p class="text-sm font-bold text-teal-950">"${qSub.definition}"</p>
+            <p class="text-xs font-extrabold text-amber-800 mt-1">Huruf Kunci: ${qSub.summary.huruf}</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            ${opts.map(o => `
+              <button onclick="answerAdventureQuiz(${o.id === qSub.id})"
+                class="p-3.5 rounded-2xl bg-white hover:bg-amber-50 border-2 border-slate-200 font-display font-bold text-sm text-slate-800 cursor-pointer">
+                ${o.summary.hukum}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function answerAdventureQuiz(isCorrect) {
+      if (isCorrect) {
+        quizAdventureScore += 20;
+        AudioFX.success();
+      } else {
+        AudioFX.wrong();
+      }
+      renderActiveGame();
+    }
+
+    // =========================================================================
+    // 7. VIEW 4: EVALUASI BAB, REKAP NILAI & LENCANA
+    // =========================================================================
+    function renderEvalView() {
+      const sel = document.getElementById('eval-chapter-select');
+      if (sel.options.length === 0) {
+        WAFA_CHAPTERS.forEach(ch => {
+          const opt = document.createElement('option');
+          opt.value = String(ch.bab);
+          opt.textContent = ch.title;
+          sel.appendChild(opt);
+        });
+      }
+
+      const list = document.getElementById('eval-mastery-list');
+      list.innerHTML = WAFA_CHAPTERS.map((ch, idx) => {
+        const done = ch.subchapters.filter(s => appState.completedSubIds.includes(s.id)).length;
+        const total = ch.subchapters.length;
+        const pct = Math.round((done / total) * 100);
+        return `
+          <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between text-xs font-bold mb-1">
+                <span class="text-slate-800 truncate">${ch.icon} ${ch.title}</span>
+                <span class="text-teal-700">${done}/${total} (${pct}%)</span>
+              </div>
+              <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 transition-all" style="width: ${pct}%"></div>
+              </div>
+            </div>
+            <button onclick="openLesson(${idx}, 0)" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-amber-50 border border-slate-300 font-bold text-xs shrink-0 cursor-pointer">
+              Ulangi
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      const badgesDef = [
+        { id: "b1", title: "Sahabat Ghunnah", icon: "🐝", unlocked: appState.completedSubIds.includes("1-1") },
+        { id: "b2", title: "Ahli Nun Sukun", icon: "🚦", unlocked: ["2-1","2-2","2-3","2-4","2-5"].every(x => appState.completedSubIds.includes(x)) },
+        { id: "b3", title: "Jawara Qolqolah", icon: "🏀", unlocked: ["9-1","9-2"].every(x => appState.completedSubIds.includes(x)) },
+        { id: "b4", title: "Master 14 Mad", icon: "📏", unlocked: appState.completedSubIds.filter(x => x.startsWith("10-")).length >= 7 }
+      ];
+
+      document.getElementById('badges-collection-grid').innerHTML = badgesDef.map(b => `
+        <div class="p-3 rounded-2xl border-2 text-center ${b.unlocked ? 'bg-white border-amber-400 shadow-xs' : 'bg-slate-100 border-slate-200 opacity-55'}">
+          <div class="text-2xl mb-1">${b.unlocked ? b.icon : '🔒'}</div>
+          <div class="font-display font-bold text-xs text-slate-800">${b.title}</div>
+        </div>
+      `).join('');
+    }
+
+    function startChapterEvaluation() {
+      const babNum = parseInt(document.getElementById('eval-chapter-select').value, 10);
+      const bab = WAFA_CHAPTERS.find(c => c.bab === babNum) || WAFA_CHAPTERS[0];
+      const sub = pickRandom(bab.subchapters, 1);
+      const ex = pickRandom(sub.examples, 1);
+      const area = document.getElementById('eval-quiz-area');
+      area.classList.remove('hidden');
+
+      area.innerHTML = `
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-display font-bold text-base text-amber-950">📝 Uji Pemahaman: ${bab.title}</span>
+            <button onclick="document.getElementById('eval-quiz-area').classList.add('hidden')" class="text-xs font-bold text-slate-500 cursor-pointer">✕ Tutup</button>
+          </div>
+          <p class="text-xs font-bold text-slate-700">1. Perhatikan ayat berikut, lalu tentukan hukum bacaan dan cara membacanya:</p>
+          <p class="font-arabic text-2xl sm:text-3xl font-bold text-slate-900 text-right bg-white p-3 rounded-xl border border-amber-200">${ex.ar}</p>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="completeChapterEval('${sub.id}', '${sub.summary.hukum}', '${sub.summary.cara}')"
+              class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-display font-bold text-xs cursor-pointer">
+              ✅ Periksa Pembahasan & Tandai Lulus
+            </button>
+          </div>
+          <div id="eval-result-msg" class="hidden text-xs font-bold text-emerald-900 bg-emerald-100 p-3 rounded-xl"></div>
+        </div>
+      `;
+    }
+
+    function completeChapterEval(subId, hukum, cara) {
+      markSubchapterMastered(subId);
+      const msg = document.getElementById('eval-result-msg');
+      msg.classList.remove('hidden');
+      msg.textContent = `MasyaAllah, hebat! Hukum bacaannya adalah ${hukum} (${cara}). Satu langkah lagi menjadi ahli tajwid cilik!`;
+      renderEvalView();
+    }
+
+    function recordOralPractice(predikat) {
+      AudioFX.success();
+      document.getElementById('oral-practice-feedback').textContent = `✅ Tercatat: ${predikat} — Terus semangat membaca Al-Qur'an!`;
+    }
+
+    // =========================================================================
+    // 8. PANEL KHUSUS GURU
+    // =========================================================================
+    function toggleTeacherPanel() {
+      const modal = document.getElementById('teacher-panel-modal');
+      const isHidden = modal.classList.contains('hidden');
+      if (isHidden) {
+        const chSel = document.getElementById('teacher-jump-chapter');
+        chSel.innerHTML = WAFA_CHAPTERS.map((c, i) => `<option value="${i}">${c.title}</option>`).join('');
+        populateTeacherSubchapters();
+        renderTeacherGroupControls();
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    function populateTeacherSubchapters() {
+      const babIdx = parseInt(document.getElementById('teacher-jump-chapter').value, 10) || 0;
+      const subSel = document.getElementById('teacher-jump-sub');
+      subSel.innerHTML = WAFA_CHAPTERS[babIdx].subchapters.map((s, i) => `<option value="${i}">${s.name}</option>`).join('');
+    }
+
+    function executeTeacherJump() {
+      const babIdx = parseInt(document.getElementById('teacher-jump-chapter').value, 10) || 0;
+      const subIdx = parseInt(document.getElementById('teacher-jump-sub').value, 10) || 0;
+      toggleTeacherPanel();
+      openLesson(babIdx, subIdx);
+    }
+
+    function renderTeacherGroupControls() {
+      const box = document.getElementById('teacher-group-score-controls');
+      box.innerHTML = appState.groups.map((g, i) => `
+        <div class="p-2 rounded-xl bg-white border border-amber-200 flex items-center justify-between text-xs font-bold">
+          <span>${g.name}: ${g.score}</span>
+          <div class="flex gap-1">
+            <button onclick="addGroupScore(${i}, 10); renderTeacherGroupControls();" class="px-2 py-0.5 rounded bg-emerald-500 text-white cursor-pointer">+10</button>
+            <button onclick="addGroupScore(${i}, -5); renderTeacherGroupControls();" class="px-2 py-0.5 rounded bg-rose-500 text-white cursor-pointer">-5</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleTeacherPedagogyNotes() {
+      appState.showTeacherNotes = document.getElementById('teacher-show-notes').checked;
+      if (appState.view === 'lesson') renderLessonView();
+    }
+
+    function resetAllProgress() {
+      appState.completedSubIds = [];
+      appState.earnedBadges = [];
+      saveProgress();
+      toggleTeacherPanel();
+      renderChapterMap();
+    }
+
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const pts = Array.from({ length: 90 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 5 + 3,
+        color: ['#F59E0B', '#0F766E', '#EC4899', '#3B82F6'][Math.floor(Math.random() * 4)]
+      }));
+      let f = 0;
+      function anim() {
+        if (f > 140) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pts.forEach(p => {
+          ctx.beginPath(); ctx.fillStyle = p.color; ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+          p.y += 4;
+        });
+        f++; requestAnimationFrame(anim);
+      }
+      anim();
+    }
+
+    window.onload = function () {
+      loadProgress();
+      renderChapterMap();
+    };
+  </script>
+</body>
+</html>
